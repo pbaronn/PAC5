@@ -1,5 +1,5 @@
 # PAC5
-                                             Gerenciador Tricolor
+                                            Gerenciamento de Escola de Futebol
 Problema a ser resolvido:
 
 A proposta deste trabalho é o desenvolvimento de uma aplicação web para o gerenciamento de alunos em uma escola de futebol, com foco na segurança e bem-estar dos participantes. Considerando que a maioria dos alunos em escolas de futebol são menores de idade, é fundamental ter um sistema que centralize e facilite o acesso às informações mais relevantes, especialmente em emergências. 
@@ -10,24 +10,35 @@ Desenvolver e implementar um sistema web para a gestão de alunos em escola de f
 
                                             Funcionalidades Principais:
 Login e Controle de Acesso;
+
 Gerenciamento de alunos e equipes;
+
 Cadastro de Jogadores;
+
 Edição e Exclusão de Jogadores;
+
 Gestão de jogos;
+
 Gestão financeira.
+
                                                Tecnologias
 
   
 Frontend: HTML, CSS, JavaScript;
+
 Backend: Node.js com Express ;
+
 Autenticação: JWT;
+
 Controle de Versão: GitHub;
+
 Gerenciamento de Tarefas: Trello.
 
 
                                                  Gerenciamento do Projeto:
 
 •	Trello para acompanhar o progresso;
+
 •	Figma para design de telas.
 
 
