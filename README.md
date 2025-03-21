@@ -2,78 +2,33 @@
                                              Gerenciador Tricolor
 Problema a ser resolvido:
 
-Muitas crianças treinam futebol sem a presença dos pais ou viajam para competições desacompanhadas. Em emergências, ter um sistema centralizado com os dados médicos e informações dos jogadores pode agilizar o atendimento e garantir mais segurança.
+A proposta deste trabalho é o desenvolvimento de uma aplicação web para o gerenciamento de alunos em uma escola de futebol, com foco na segurança e bem-estar dos participantes. Considerando que a maioria dos alunos em escolas de futebol são menores de idade, é fundamental ter um sistema que centralize e facilite o acesso às informações mais relevantes, especialmente em emergências. 
 
                                              Objetivo da Aplicação:
 
-Criar um sistema web para uma escola de futebol, permitindo o gerenciamento de turmas, jogadores e informações médicas.
+Desenvolver e implementar um sistema web para a gestão de alunos em escola de futebol, proporcionando maior eficiência administrativa, segurança na tomada de decisões e acesso rápido a informações médicas e cadastrais dos jogadores. O sistema visa centralizar e organizar os dados dos alunos, gerenciamento de jogos e gerenciamento financeiro, facilitando a comunicação entre treinadores, gestores e responsáveis, garantindo um ambiente seguro e organizado.
 
                                             Funcionalidades Principais:
+Login e Controle de Acesso;
+Gerenciamento de alunos e equipes;
+Cadastro de Jogadores;
+Edição e Exclusão de Jogadores;
+Gestão de jogos;
+Gestão financeira.
+                                               Tecnologias
 
-    Login e Controle de Acesso:
- 
-•	Tela de login com autenticação de usuário.
+  
+Frontend: HTML, CSS, JavaScript;
+Backend: Node.js com Express ;
+Autenticação: JWT;
+Controle de Versão: GitHub;
+Gerenciamento de Tarefas: Trello.
 
-    Gerenciamento de Turmas:
-
-•	Listagem das turmas cadastradas.
-
-•	Cada turma deve exibir: nome da turma, número de jogadores e um botão para acessar os jogadores.
-
-    Gerenciamento de Jogadores:
-
-•	Exibir lista de jogadores dentro da turma.
-
-•	Para cada jogador, exibir nome, posição e opções de edição.
-
-•	Opção de adicionar novo jogador.
-
-    Cadastro de Jogadores:
-
-•	Campos de dados básicos.
-
-•	Perguntas médicas.
-
-    Edição e Exclusão de Jogadores:
-
-•	Tela para editar informações do jogador.
-
-•	Botões: Salvar, Cancelar e Excluir Jogador.
-
-    Registro de Transação (Histórico de Alterações):
-
-•	Sempre que um jogador for cadastrado ou editado, registrar a data da alteração e o usuário responsável.
-
-
-                                                 Tecnologias
-
-    Frontend:
-
-•	HTML, CSS, JavaScript
-
-•	Framework: React.js
-
-    Backend:
-
-•	Node.js com Express.js
-
-•	Banco de Dados: MySQL
-
-    Autenticação:
-
-•	JWT
-
-    Deploy e CI/CD:
-
-•	Repositório no GitHub
-
-•	Deploy no Vercel (frontend) e Render (backend)
 
                                                  Gerenciamento do Projeto:
 
-•	Trello para acompanhar o progresso
-
-•	Figma para wireframes das telas
+•	Trello para acompanhar o progresso;
+•	Figma para design de telas.
 
 
 
