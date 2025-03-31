@@ -1,4 +1,7 @@
 # PAC5
+
+Link Trello: https://trello.com/invite/b/67eb14862febdeb737dedba4/ATTI235605d8d169a8724c4cd531c3f56654F40EB50C/gestao-de-projeto
+                                            
                                             Gerenciamento de Escola de Futebol
 Problema a ser resolvido:
 
