@@ -28,7 +28,7 @@ Gestão financeira.
   
 Frontend: HTML, CSS, JavaScript;
 
-Backend: Node.js com Express ;
+Backend: php;
 
 Autenticação: JWT;
 
