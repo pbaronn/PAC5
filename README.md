@@ -17,18 +17,20 @@ Gerenciamento de alunos e equipes;
 
 Cadastro de Jogadores;
 
+Anamnese;
+
 Edição e Exclusão de Jogadores;
 
 Gestão de jogos;
 
-Gestão financeira.
+Gestão de presença.
 
                                                Tecnologias
 
   
 Frontend: HTML, CSS, JavaScript;
 
-Backend: php;
+Backend: nodejs + express;
 
 Autenticação: JWT;
 
