@@ -1,0 +1,189 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #7a1818;
+  min-height: 100vh;
+}
+
+.topbar {
+  width: 100vw;
+  background: #2b2828;
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 18px;
+  height: 70px;
+  box-shadow: 0 2px 12px 0 rgba(255, 254, 254, 0.795);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+}
+.logo-top {
+  width: 54px;
+  margin-right: 24px;
+  filter: drop-shadow(0 2px 8px #0008);
+  transition: transform 0.2s;
+}
+.logo-top:hover {
+  transform: scale(1.08) rotate(-2deg);
+}
+.menu {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 18px;
+}
+.menu a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px 0 16px;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-bottom 0.2s, background 0.2s;
+  position: relative;
+  min-width: 60px;
+}
+.menu a i {
+  font-size: 22px;
+  margin-bottom: 2px;
+  transition: color 0.2s, transform 0.2s;
+}
+.menu a.active, .menu a:hover {
+  color: #ffebee;
+  border-bottom: 3px solid #fff;
+  background: #ff545459;
+}
+.menu a.active i, .menu a:hover i {
+  color: #fff;
+  transform: scale(1.12);
+}
+.menu a span {
+  font-size: 13px;
+  margin-top: 2px;
+}
+ 
+.dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 32px;
+  padding: 110px 5vw 32px 5vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+.card {
+  background: rgba(40, 40, 40, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 400;
+  min-height: 180px;
+  position: relative;
+  transition: box-shadow 0.3s, transform 0.2s, background 0.2s;
+  cursor: pointer;
+  animation: fadeInUp 0.7s;
+}
+.card i {
+  font-size: 48px;
+  margin-bottom: 18px;
+  opacity: 0.7;
+  transition: color 0.2s, transform 0.2s;
+}
+.card:hover {
+  box-shadow: 0 8px 40px 0 rgba(0,0,0,0.28);
+  background: rgba(0, 0, 0, 0.22);
+  transform: translateY(-6px) scale(1.03);
+}
+.card:hover i {
+  color: #fff;
+  opacity: 1;
+  transform: scale(1.12);
+}
+ 
+.card-jogos i {
+  color: #bdbdbd;
+}
+.card-jogadores i {
+  color: #bdbdbd;
+}
+ 
+.card-eventos, .card-pagamentos {
+  align-items: flex-start;
+  justify-content: flex-end;
+  font-size: 16px;
+  padding: 0 0 18px 18px;
+}
+.card-pagamentos {
+  align-items: flex-end;
+  padding: 0 18px 18px 0;
+  text-align: right;
+}
+ 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 24px;
+    padding: 100px 3vw 24px 3vw;
+  }
+  .card {
+    min-height: 120px;
+    font-size: 17px;
+  }
+}
+ 
+@media (max-width: 600px) {
+  .topbar {
+    flex-direction: column;
+    height: auto;
+    padding: 8px 0 0 0;
+  }
+  .logo-top {
+    margin: 0 0 8px 0;
+    width: 44px;
+  }
+  .menu {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding-bottom: 6px;
+  }
+  .menu a {
+    font-size: 12px;
+    min-width: 44px;
+    padding: 6px 8px 0 8px;
+  }
+  .dashboard {
+    padding: 90px 2vw 16px 2vw;
+    gap: 14px;
+  }
+  .card {
+    min-height: 80px;
+    font-size: 14px;
+    padding: 0 8px;
+  }
+  .card i {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+}
