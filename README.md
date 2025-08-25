@@ -152,8 +152,8 @@ Modelagem em **diagrama de containers**, representando interação entre:
 Protótipo criado com foco em:  
 - Navegação simples.  
 - Clareza das informações.  
-- Telas principais: login, gerenciamento de alunos, perfil individual, turmas, calendário, jogos e treinos.  
-
+- Telas principais: login, gerenciamento de alunos, perfil individual, turmas, calendário, jogos e treinos.
+ [Acesse o projeto de modelagem Figma aqui](https://www.figma.com/design/0DL5hMWpICZ7a93WFJMf0J/Escolinha-Futebol--JEC?node-id=0-1&p=f&t=Yq0Tb0FUtpRdAroh-0)
 ---
 
 ## 5. Avaliação do Projeto pelo Público Beneficiado (Julho/2025)
