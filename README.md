@@ -88,7 +88,7 @@ Principais funcionalidades:
 - **Backend:** PHP.  
 - **Autenticação:** JWT (JSON Web Token).  
 - **Versionamento:** GitHub.  
-- **Gestão de Tarefas:** Trello.  
+- **Gestão de Tarefas:** Trello.  [Acesse aqui]([https://www.figma.com/design/0DL5hMWpICZ7a93WFJMf0J/Escolinha-Futebol--JEC?node-id=0-1&p=f&t=Yq0Tb0FUtpRdAroh-0](https://trello.com/invite/b/68af575a92ad93cded57a5c7/ATTI2df05a8a615ed947569793fd4bf1fc8b4BC8C18F/pac-2025))
 - **Prototipagem:** Figma.  
 
 ### 4.4 Organização de Responsabilidades
