@@ -89,7 +89,7 @@ Principais funcionalidades:
 - **Autenticação:** JWT (JSON Web Token).  
 - **Versionamento:** GitHub.  
 - **Gestão de Tarefas:** Trello - [Acesse aqui](https://trello.com/invite/b/68af575a92ad93cded57a5c7/ATTI2df05a8a615ed947569793fd4bf1fc8b4BC8C18F/pac-2025)
-- **Prototipagem:** Figma.  
+- **Prototipagem:** Figma - [Acesse o projeto de modelagem Figma aqui](https://www.figma.com/design/0DL5hMWpICZ7a93WFJMf0J/Escolinha-Futebol--JEC?node-id=0-1&p=f&t=Yq0Tb0FUtpRdAroh-0) 
 
 ### 4.4 Organização de Responsabilidades
 - Desenvolvimento Frontend.  
@@ -153,7 +153,6 @@ Protótipo criado com foco em:
 - Navegação simples.  
 - Clareza das informações.  
 - Telas principais: login, gerenciamento de alunos, perfil individual, turmas, calendário, jogos e treinos.
- [Acesse o projeto de modelagem Figma aqui](https://www.figma.com/design/0DL5hMWpICZ7a93WFJMf0J/Escolinha-Futebol--JEC?node-id=0-1&p=f&t=Yq0Tb0FUtpRdAroh-0)
 ---
 
 ## 5. Avaliação do Projeto pelo Público Beneficiado (Julho/2025)
