@@ -11,7 +11,7 @@ npm run dev
 gitflow
 modelo alternativo de ramificação do Git que consiste no uso de ramificações de recursos e várias ramificações primárias.
 
-git flow init
+git flow init ---nao pode ter alterações pendentes
 
 git branch
     * develop
