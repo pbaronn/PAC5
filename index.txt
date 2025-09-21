@@ -1,0 +1,26 @@
+Framework vite - construtor de projetos
+lucide-react - Biblioteca  para ícones.
+
+
+
+npm install
+npm run dev
+
+
+======================================
+gitflow
+modelo alternativo de ramificação do Git que consiste no uso de ramificações de recursos e várias ramificações primárias.
+
+git flow init
+
+git branch
+    * develop
+      master
+
+
+na develop 
+git flow feature start nomedafeature
+---faz o que tem que fazer
+git add .
+git commit -m 'adiciona alguma coisa'
+git flow feature finish nome da feature
