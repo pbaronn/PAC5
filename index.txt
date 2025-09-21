@@ -24,3 +24,33 @@ git flow feature start nomedafeature
 git add .
 git commit -m 'adiciona alguma coisa'
 git flow feature finish nome da feature
+
+
+
+
+
+=======================================
+ppjteste> git add .
+git commit -m "Organiza main"
+git push -u origin main    
+git pull
+
+
+
+============================
+Como Resolver o Conflito de Mesclagem
+
+1 Encontrar e editar o arquivo com o conflito.
+abrir o arquivo
+
+2 Resolver o conflito no código.
+escolher entre qual versao manter
+
+3 Finalizar a mesclagem.
+git add README.md
+git commit -m "Resolve merge conflict in README.md"
+git push -u origin main
+
+
+
+
