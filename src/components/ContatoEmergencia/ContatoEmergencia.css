@@ -1,0 +1,254 @@
+/* ContatoEmergencia.css */
+:root {
+    --primary-color: #000000;
+    --bg-dark: #121212;
+    --bg-medium: #1f1f1f;
+    --bg-light: #0e0d0d;
+    --text-color: #e0e0e0;
+    --border-color: #444;
+    --shadow-color: rgb(0, 0, 0);
+  }
+  
+  .form-section-subtitle {
+    margin: 25px 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+  }
+  
+  .form-section-subtitle::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), rgba(0,0,0,0.3));
+  }
+  
+  .form-section-subtitle h3 {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  
+  .contato-emergencia-group {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+    transition: all 0.3s ease;
+    animation: slideInUp 0.4s ease-out;
+  }
+  
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .contato-emergencia-group:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+  
+  .contato-emergencia-group::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), rgba(0,0,0,0.3), var(--primary-color));
+    border-radius: 12px 12px 0 0;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+  
+  .form-group-remove {
+    display: flex;
+    align-items: flex-end;
+    margin-left: 10px;
+  }
+  
+  .remove-contato-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .remove-contato-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.3s;
+  }
+  
+  .remove-contato-btn:hover::before {
+    left: 100%;
+  }
+  
+  .remove-contato-btn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 18px rgba(220, 53, 69, 0.4);
+  }
+  
+  .remove-contato-btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  .add-contato-btn {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .add-contato-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.4s;
+  }
+  
+  .add-contato-btn:hover::before {
+    left: 100%;
+  }
+  
+  .add-contato-btn:hover {
+    background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+  }
+  
+  .add-contato-btn:active {
+    transform: translateY(-1px) scale(0.98);
+  }
+  
+  /* Animação de remoção */
+  .contato-emergencia-group.removing {
+    animation: slideOutUp 0.3s ease-in forwards;
+  }
+  
+  @keyframes slideOutUp {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+      max-height: 200px;
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-20px);
+      max-height: 0;
+      margin-bottom: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+  
+  /* Numeração visual dos contatos */
+  .contato-emergencia-group::after {
+    content: attr(data-index);
+    position: absolute;
+    top: -8px;
+    right: 15px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgba(0,0,0,0.8) 100%);
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  
+  /* Responsividade */
+  @media (max-width: 768px) {
+    .contato-emergencia-group {
+      padding: 15px;
+    }
+    
+    .form-row {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .form-group-remove {
+      align-self: center;
+      margin: 10px 0 0 0;
+    }
+    
+    .remove-contato-btn {
+      width: 38px;
+      height: 38px;
+    }
+    
+    .add-contato-btn {
+      padding: 12px 20px;
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .form-section-subtitle h3 {
+      font-size: 1.1rem;
+    }
+    
+    .contato-emergencia-group {
+      padding: 12px;
+      margin-bottom: 15px;
+    }
+  }

@@ -1,0 +1,384 @@
+/* StudentForm.css */
+:root {
+    --primary-color: #000000;
+    --bg-dark: #121212;
+    --bg-medium: #1f1f1f;
+    --bg-light: #0e0d0d;
+    --text-color: #e0e0e0;
+    --border-color: #444;
+    --shadow-color: rgb(0, 0, 0);
+  }
+  
+  .registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgba(0,0,0,0.9) 100%);
+    padding: 45px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px var(--shadow-color);
+    overflow-y: auto;
+    max-height: none;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: formSlideIn 0.6s ease-out;
+  }
+  
+  @keyframes formSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .registration-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #fff, rgba(255,255,255,0.3), #fff);
+    border-radius: 20px 20px 0 0;
+  }
+  
+  .form-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: white;
+    text-align: center;
+    margin-bottom: 25px;
+    text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  
+  .form-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, white, rgba(255,255,255,0.3), white);
+    border-radius: 2px;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 25px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    animation: rowFadeIn 0.4s ease-out;
+    animation-fill-mode: both;
+  }
+  
+  @keyframes rowFadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 280px;
+    position: relative;
+  }
+  
+  .form-group.full-width {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+  
+  .form-group label {
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    position: relative;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  
+  .form-group label::before {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, white, rgba(255,255,255,0.5));
+    transition: width 0.3s ease;
+  }
+  
+  .form-group:focus-within label::before {
+    width: 100%;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: linear-gradient(135deg, white 0%, #f8f9fa 100%);
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--bg-dark);
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.4s ease;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  
+  .form-group input::placeholder,
+  .form-group textarea::placeholder {
+    color: #666;
+    font-style: italic;
+    transition: all 0.3s ease;
+  }
+  
+/* Continuação do StudentForm.css */
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+  border-color: rgba(255,255,255,0.5);
+  background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+  transform: translateY(-2px);
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.1), 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: white;
+  background: linear-gradient(135deg, #fff 0%, #f5f5f5 100%);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3), inset 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+}
+
+.form-group input:focus::placeholder,
+.form-group textarea:focus::placeholder {
+  color: #999;
+  transform: translateY(-2px);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.form-group select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  padding-right: 45px;
+  appearance: none;
+}
+
+.form-group select:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23000000' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Botões do formulário */
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 2px solid rgba(255,255,255,0.2);
+}
+
+.submit-btn,
+.cancel-btn {
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  transition: all 0.4s ease;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-btn::before,
+.cancel-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.submit-btn:hover::before,
+.cancel-btn:hover::before {
+  left: 100%;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+  color: white;
+  box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.submit-btn:hover {
+  background: linear-gradient(135deg, #1e7e34 0%, #155724 100%);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(40, 167, 69, 0.5);
+}
+
+.submit-btn:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.cancel-btn {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+  box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.cancel-btn:hover {
+  background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(220, 53, 69, 0.5);
+}
+
+.cancel-btn:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+/* Estados especiais dos campos */
+.form-group input:invalid:not(:placeholder-shown) {
+  border-color: #dc3545;
+  background: linear-gradient(135deg, #fff 0%, #fef2f2 100%);
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+
+.form-group input:valid:not(:placeholder-shown) {
+  border-color: #28a745;
+  background: linear-gradient(135deg, #fff 0%, #f0fff4 100%);
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+/* Campos condicionais */
+.conditional-field {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  border-left: 4px solid white;
+  animation: conditionalSlideIn 0.4s ease-out;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+@keyframes conditionalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px;
+  }
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .registration-form {
+    padding: 30px;
+    gap: 20px;
+  }
+  
+  .form-title {
+    font-size: 1.8rem;
+  }
+  
+  .form-row {
+    gap: 20px;
+  }
+  
+  .form-group {
+    min-width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .registration-form {
+    padding: 25px;
+    border-radius: 15px;
+  }
+  
+  .form-title {
+    font-size: 1.6rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-group {
+    min-width: 100%;
+  }
+  
+  .btn-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .submit-btn,
+  .cancel-btn {
+    width: 100%;
+    padding: 14px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-form {
+    padding: 20px;
+    margin: 10px;
+  }
+  
+  .form-title {
+    font-size: 1.4rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 12px 15px;
+    font-size: 16px; /* Previne zoom no iOS */
+  }
+}

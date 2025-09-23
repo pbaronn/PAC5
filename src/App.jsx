@@ -1,110 +1,73 @@
+import React, { useState } from 'react';
+import LoginPage from './pages/LoginPage/LoginPage';
+import BuscaAluno from './pages/BuscaAluno/BuscaAluno';
+import CadastraAluno from './pages/CadastraAluno/CadastraAluno';
+import EditaAluno from './pages/EditaAluno/EditaAluno';
+import './App.css';
 
-import './App.css'
-import { useState } from 'react'
-import LoginPage from './components/Login/LoginPage'
-import BuscaAluno from './components/Aluno/BuscaAluno'
-import CadastrarAlunos from './components/aluno/CadastraAluno'
-import EditaAluno from './components/Aluno/EditaAluno'
-
-function App() {
-  const [currentPage, setCurrentPage] = useState('login') 
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [currentPage, setCurrentPage] = useState('busca'); // 'busca', 'cadastra', 'edita'
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const handleLoginSuccess = () => {
-    setCurrentPage('busca')
-  }
+    setIsLoggedIn(true);
+    setCurrentPage('busca');
+  };
 
   const handleLogout = () => {
-    setCurrentPage('login')
+    console.log('Fazendo logout...');
+    setIsLoggedIn(false);
+    setCurrentPage('busca');
+    setSelectedStudent(null);
+  };
+
+  const handleNavigation = (page, studentData = null) => {
+    setCurrentPage(page);
+    if (studentData) {
+      setSelectedStudent(studentData);
+    }
+  };
+
+  // Se não estiver logado, mostra a tela de login
+  if (!isLoggedIn) {
+    return <LoginPage onLoginSuccess={handleLoginSuccess} />;
   }
 
-  const handleNavigateToCadastro = () => {
-    setCurrentPage('cadastro')
-  }
-
-  const handleNavigateToBusca = () => {
-    setCurrentPage('busca')
-  }
-
-   const handleNavigateEdita = () => {
-    setCurrentPage('edita')
-  }
-
+  // Função para renderizar a página atual
+  const renderCurrentPage = () => {
+    switch (currentPage) {
+      case 'cadastra':
+        return (
+          <CadastraAluno 
+            onLogout={handleLogout}
+            onNavigate={handleNavigation}
+          />
+        );
+      case 'edita':
+        return (
+          <EditaAluno 
+            onLogout={handleLogout} 
+            studentData={selectedStudent}
+            onNavigate={handleNavigation}
+          />
+        );
+      case 'busca':
+      default:
+        return (
+          <BuscaAluno 
+            onLogout={handleLogout}
+            onNavigate={handleNavigation}
+          />
+        );
+    }
+  };
 
   return (
-    <div className="App">
-      {/* Botões de teste para alternar entre telas */}
-      <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 9999, display: 'flex', gap: '10px' }}>
-        <button 
-          onClick={() => setCurrentPage('login')}
-          style={{ 
-            padding: '8px 16px', 
-            backgroundColor: currentPage === 'login' ? '#4d0402' : '#666',
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Login
-        </button>
-        <button 
-          onClick={() => setCurrentPage('busca')}
-          style={{ 
-            padding: '8px 16px', 
-            backgroundColor: currentPage === 'busca' ? '#4d0402' : '#666',
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Busca
-        </button>
-        <button 
-          onClick={() => setCurrentPage('cadastro')}
-          style={{ 
-            padding: '8px 16px', 
-            backgroundColor: currentPage === 'cadastro' ? '#4d0402' : '#666',
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Cadastro
-        </button>
-
-        <button 
-          onClick={() => setCurrentPage('edita')}
-          style={{ 
-            padding: '8px 16px', 
-            backgroundColor: currentPage === 'edita' ? '#4d0402' : '#666',
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Edita
-        </button>
-
-      </div>
-
-      {currentPage === 'login' && (
-        <LoginPage onLoginSuccess={handleLoginSuccess} />
-      )}
-      {currentPage === 'busca' && (
-        <BuscaAluno onLogout={handleLogout} />
-      )}
-      {currentPage === 'cadastro' && (
-        <CadastrarAlunos onLogout={handleLogout} />
-      )}
-
-       {currentPage === 'edita' && (
-        <EditaAluno onLogout={handleLogout} />
-      )}
+    <div className="app">
+      {renderCurrentPage()}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
