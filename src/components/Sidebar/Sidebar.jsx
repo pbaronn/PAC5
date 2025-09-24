@@ -5,7 +5,7 @@ import './Sidebar.css';
 const Sidebar = ({ activeItem = 'Cadastrar Aluno', onItemClick }) => {
   const sidebarItems = [
     { name: 'Cadastrar Aluno', icon: User, page: 'cadastra' },
-    { name: 'Buscar Aluno', icon: Users, page: 'busca' }
+    { name: 'Gerenciar Alunos', icon: Users, page: 'gerenciar' }
   ];
 
   return (

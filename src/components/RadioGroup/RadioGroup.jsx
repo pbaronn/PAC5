@@ -1,6 +1,5 @@
 import React from 'react';
 import './RadioGroup.css';
-
 const RadioGroup = ({
   label,
   name,

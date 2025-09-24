@@ -12,7 +12,8 @@ const FormField = ({
   required = false,
   options = [],
   fullWidth = false,
-  rows = 3
+  rows = 3,
+  disabled = false
 }) => {
   const fieldClass = `form-group ${fullWidth ? 'full-width' : ''}`;
 
@@ -26,6 +27,7 @@ const FormField = ({
             value={value}
             onChange={onChange}
             required={required}
+            disabled={disabled}
           >
             <option value="">Selecione</option>
             {options.map((option) => (
@@ -46,6 +48,7 @@ const FormField = ({
             placeholder={placeholder}
             required={required}
             rows={rows}
+            disabled={disabled}
           />
         );
       
@@ -59,6 +62,7 @@ const FormField = ({
             onChange={onChange}
             placeholder={placeholder}
             required={required}
+            disabled={disabled}
           />
         );
     }

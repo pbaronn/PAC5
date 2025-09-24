@@ -2,31 +2,37 @@ import React, { useState } from 'react';
 import LoginPage from './pages/LoginPage/LoginPage';
 import BuscaAluno from './pages/BuscaAluno/BuscaAluno';
 import CadastraAluno from './pages/CadastraAluno/CadastraAluno';
-import EditaAluno from './pages/EditaAluno/EditaAluno';
+import VisualizarAluno from './pages/VisualizarAluno/VisualizarAluno';
 import './App.css';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [currentPage, setCurrentPage] = useState('busca'); // 'busca', 'cadastra', 'edita'
+  const [currentPage, setCurrentPage] = useState('gerenciar'); // 'gerenciar', 'cadastra', 'visualizar'
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [editMode, setEditMode] = useState(false);
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
-    setCurrentPage('busca');
+    setCurrentPage('gerenciar');
   };
 
   const handleLogout = () => {
     console.log('Fazendo logout...');
     setIsLoggedIn(false);
-    setCurrentPage('busca');
+    setCurrentPage('gerenciar');
     setSelectedStudent(null);
+    setEditMode(false);
   };
 
-  const handleNavigation = (page, studentData = null) => {
+  const handleNavigation = (page, studentData = null, edit = false) => {
     setCurrentPage(page);
-    if (studentData) {
-      setSelectedStudent(studentData);
-    }
+    setSelectedStudent(studentData);
+    setEditMode(edit);
+  };
+
+  const handleDeleteStudent = (studentId) => {
+    console.log('Excluindo aluno:', studentId);
+    // Aqui você implementaria a lógica de exclusão
   };
 
   // Se não estiver logado, mostra a tela de login
@@ -44,20 +50,23 @@ const App = () => {
             onNavigate={handleNavigation}
           />
         );
-      case 'edita':
+      case 'visualizar':
         return (
-          <EditaAluno 
+          <VisualizarAluno 
             onLogout={handleLogout} 
             studentData={selectedStudent}
             onNavigate={handleNavigation}
+            editMode={editMode}
+            onEditModeChange={setEditMode}
           />
         );
-      case 'busca':
+      case 'gerenciar':
       default:
         return (
           <BuscaAluno 
             onLogout={handleLogout}
             onNavigate={handleNavigation}
+            onDeleteStudent={handleDeleteStudent}
           />
         );
     }

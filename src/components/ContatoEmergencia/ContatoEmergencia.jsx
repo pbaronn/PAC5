@@ -7,7 +7,8 @@ const ContatoEmergencia = ({
   contatos,
   onAdd,
   onRemove,
-  onUpdate
+  onUpdate,
+  disabled = false
 }) => {
   return (
     <div>
@@ -25,6 +26,7 @@ const ContatoEmergencia = ({
               onChange={(e) => onUpdate(index, 'nome', e.target.value)}
               placeholder="Nome completo"
               required
+              disabled={disabled}
             />
             
             <FormField
@@ -35,9 +37,10 @@ const ContatoEmergencia = ({
               onChange={(e) => onUpdate(index, 'telefone', e.target.value)}
               placeholder="(00) 00000-0000"
               required
+              disabled={disabled}
             />
             
-            {contatos.length > 1 && (
+            {contatos.length > 1 && !disabled && (
               <div className="form-group-remove">
                 <button
                   type="button"
@@ -53,16 +56,18 @@ const ContatoEmergencia = ({
         </div>
       ))}
       
-      <div className="form-row">
-        <button
-          type="button"
-          className="add-contato-btn"
-          onClick={onAdd}
-        >
-          <Plus size={16} />
-          Adicionar Contato de Emergência
-        </button>
-      </div>
+      {!disabled && (
+        <div className="form-row">
+          <button
+            type="button"
+            className="add-contato-btn"
+            onClick={onAdd}
+          >
+            <Plus size={16} />
+            Adicionar Contato de Emergência
+          </button>
+        </div>
+      )}
     </div>
   );
 };

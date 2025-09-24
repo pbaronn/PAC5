@@ -5,7 +5,7 @@ import SearchFilters from '../../components/SearchFilters/SearchFilters';
 import StudentsTable from '../../components/StudentsTable/StudentsTable';
 import './BuscaAluno.css';
 
-const BuscaAluno = ({ onLogout, onNavigate }) => {
+const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
   const [students, setStudents] = useState([]);
   const [allStudents, setAllStudents] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -14,32 +14,64 @@ const BuscaAluno = ({ onLogout, onNavigate }) => {
 
   // Dados mockados para teste (remova quando tiver API real)
   const mockStudents = [
-    { id: 1, name: 'João Silva', category: 'Sub-7', status: 'Ativo' },
-    { id: 2, name: 'Maria Santos', category: 'Sub-6', status: 'Ativo' },
-    { id: 3, name: 'Pedro Oliveira', category: 'Sub-8', status: 'Inativo' },
-    { id: 4, name: 'Ana Costa', category: 'Sub-5', status: 'Ativo' },
-    { id: 5, name: 'Carlos Ferreira', category: 'Sub-7', status: 'Ativo' }
+    { 
+      id: 1, 
+      name: 'João Silva', 
+      category: 'Sub-7', 
+      status: 'Ativo',
+      nomeAluno: 'João Silva',
+      dataNascimento: '2017-05-15',
+      genero: 'masculino',
+      telefone: '(11) 99999-1111',
+      telefone2: '(11) 8888-1111',
+      cpf: '123.456.789-01',
+      rg: '12.345.678-9',
+      rua: 'Rua das Flores, 123',
+      bairro: 'Centro',
+      cidade: 'São Paulo',
+      cep: '01234-567',
+      nomeResponsavel: 'Maria Silva',
+      cpfResponsavel: '987.654.321-09',
+      telefoneResponsavel: '(11) 77777-1111',
+      grauParentesco: 'mae'
+    },
+    { 
+      id: 2, 
+      name: 'Maria Santos', 
+      category: 'Sub-6', 
+      status: 'Ativo',
+      nomeAluno: 'Maria Santos',
+      dataNascimento: '2018-03-22',
+      genero: 'feminino',
+      telefone: '(11) 99999-2222',
+      cpf: '123.456.789-02',
+      rg: '12.345.678-8'
+    },
+    { 
+      id: 3, 
+      name: 'Pedro Oliveira', 
+      category: 'Sub-8', 
+      status: 'Inativo',
+      nomeAluno: 'Pedro Oliveira',
+      dataNascimento: '2016-08-10',
+      genero: 'masculino',
+      telefone: '(11) 99999-3333',
+      cpf: '123.456.789-03',
+      rg: '12.345.678-7'
+    }
   ];
-
-  const API_URL = 'http://localhost:3001/api/students';
 
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      // Tenta buscar da API, se falhar usa dados mockados
-      const response = await fetch(API_URL);
-      if (!response.ok) {
-        throw new Error('Erro ao buscar dados da API');
-      }
-      const data = await response.json();
-      setAllStudents(data);
-      setStudents(data);
+      // Simula carregamento
+      setTimeout(() => {
+        setAllStudents(mockStudents);
+        setStudents(mockStudents);
+        setLoading(false);
+      }, 500);
     } catch (error) {
-      console.error('Erro ao buscar da API, usando dados mockados:', error);
-      // Usa dados mockados se a API não estiver disponível
-      setAllStudents(mockStudents);
-      setStudents(mockStudents);
-    } finally {
+      console.error('Erro ao buscar alunos:', error);
       setLoading(false);
     }
   };
@@ -72,6 +104,22 @@ const BuscaAluno = ({ onLogout, onNavigate }) => {
     }
   };
 
+  const handleViewStudent = (student) => {
+    if (onNavigate) {
+      onNavigate('visualizar', student, false);
+    }
+  };
+
+  const handleDeleteStudent = (studentId) => {
+    if (onDeleteStudent) {
+      onDeleteStudent(studentId);
+      // Remove o aluno da lista local
+      const updatedStudents = allStudents.filter(student => student.id !== studentId);
+      setAllStudents(updatedStudents);
+      setStudents(updatedStudents);
+    }
+  };
+
   if (loading) {
     return (
       <div className="student-search-container">
@@ -90,12 +138,12 @@ const BuscaAluno = ({ onLogout, onNavigate }) => {
       
       <div className="main-content">
         <Sidebar 
-          activeItem="Buscar Aluno" 
+          activeItem="Gerenciar Alunos" 
           onItemClick={handleSidebarClick} 
         />
         
         <main className="main-panel">
-          <h1 className="panel-title">Atletas Cadastrados</h1>
+          <h1 className="panel-title">Gerenciar Alunos</h1>
           
           <SearchFilters
             selectedCategory={selectedCategory}
@@ -105,7 +153,11 @@ const BuscaAluno = ({ onLogout, onNavigate }) => {
             onClear={handleClear}
           />
           
-          <StudentsTable students={students} />
+          <StudentsTable 
+            students={students}
+            onView={handleViewStudent}
+            onDelete={handleDeleteStudent}
+          />
         </main>
       </div>
     </div>
