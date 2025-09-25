@@ -19,11 +19,20 @@ git branch
 
 
 na develop 
-git flow feature start nomedafeature
+git flow feature start edita_front
 ---faz o que tem que fazer
 git add .
 git commit -m 'adiciona alguma coisa'
 git flow feature finish nome da feature
+
+
+git flow release start 0.1.0
+git flow release finish 0.1.0
+
+
+
+
+
 
 
 
