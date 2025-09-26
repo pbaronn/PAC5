@@ -20,7 +20,7 @@ const Header = ({ activeNav = 'Alunos', onLogout, onNavigate }) => {
 
   const handleNavClick = (navItem) => {
     if (navItem === 'Alunos' && onNavigate) {
-      onNavigate('busca');
+      onNavigate('gerenciar');
     }
     // Adicione outros handlers conforme necessário
   };

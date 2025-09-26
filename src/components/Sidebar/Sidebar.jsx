@@ -14,7 +14,10 @@ const Sidebar = ({ activeItem = 'Cadastrar Aluno', onItemClick }) => {
         <div 
           key={item.name}
           className={`sidebar-item ${activeItem === item.name ? 'active' : ''}`}
-          onClick={() => onItemClick && onItemClick(item.page)}
+          onClick={() => {
+            console.log('Sidebar: Clicou em', item.name, '->', item.page);
+            onItemClick && onItemClick(item.page);
+          }}
         >
           <div className="sidebar-icon">
             <item.icon size={24} />

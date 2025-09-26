@@ -4,7 +4,7 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import StudentForm from '../../components/StudentForm/StudentForm';
 import './EditaAluno.css';
 
-const EditaAluno = ({ onLogout, studentData = {} }) => {
+const EditaAluno = ({ onLogout, studentData = {}, onNavigate }) => {
   const handleFormSubmit = (formData) => {
     console.log('Dados do Aluno Editado:', formData);
     
@@ -31,13 +31,21 @@ const EditaAluno = ({ onLogout, studentData = {} }) => {
     }, 3000);
   };
 
-  const handleSidebarClick = (item) => {
-    console.log('Clicou em:', item);
+  const handleSidebarClick = (page) => {
+    if (onNavigate) {
+      onNavigate(page);
+    }
+  };
+
+  const handleBackToList = () => {
+    if (onNavigate) {
+      onNavigate('gerenciar');
+    }
   };
 
   return (
     <div className="student-search-container">
-      <Header activeNav="Alunos" onLogout={onLogout} />
+      <Header activeNav="Alunos" onLogout={onLogout} onNavigate={onNavigate} />
       
       <div className="main-content">
         <Sidebar 
@@ -46,7 +54,25 @@ const EditaAluno = ({ onLogout, studentData = {} }) => {
         />
         
         <main className="main-panel">
-          <h1 className="panel-title">Edição de Alunos</h1>
+          <div className="edit-header">
+            <div className="edit-title-section">
+              <h1 className="panel-title">Edição de Alunos</h1>
+              <div className="student-info">
+                <span className="student-name">{studentData?.nomeAluno || studentData?.name || 'Aluno'}</span>
+                <span className="student-id">ID: {studentData?.id || 'N/A'}</span>
+              </div>
+            </div>
+            
+            <div className="edit-actions">
+              <button 
+                type="button" 
+                className="back-btn"
+                onClick={handleBackToList}
+              >
+                ← Voltar à Lista
+              </button>
+            </div>
+          </div>
           
           <StudentForm
             title="Edição de Alunos"

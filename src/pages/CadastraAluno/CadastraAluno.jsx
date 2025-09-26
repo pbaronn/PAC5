@@ -4,12 +4,11 @@ import Sidebar from '../../components/Sidebar/Sidebar';
 import StudentForm from '../../components/StudentForm/StudentForm';
 import './CadastraAluno.css';
 
-const CadastraAluno = ({ onLogout }) => {
+const CadastraAluno = ({ onLogout, onNavigate }) => {
   const handleFormSubmit = (formData) => {
     console.log('Dados do Aluno:', formData);
     
-    // Aqui você faria a chamada para a API
-    // await fetch('/api/students', { method: 'POST', body: JSON.stringify(formData) })
+
     
     const message = document.createElement('div');
     message.innerText = 'Formulário enviado com sucesso! Verifique o console para ver os dados.';
@@ -31,13 +30,15 @@ const CadastraAluno = ({ onLogout }) => {
     }, 3000);
   };
 
-  const handleSidebarClick = (item) => {
-    console.log('Clicou em:', item);
+  const handleSidebarClick = (page) => {
+    if (onNavigate) {
+      onNavigate(page);
+    }
   };
 
   return (
     <div className="student-search-container">
-      <Header activeNav="Alunos" onLogout={onLogout} />
+      <Header activeNav="Alunos" onLogout={onLogout} onNavigate={onNavigate} />
       
       <div className="main-content">
         <Sidebar 
@@ -46,10 +47,11 @@ const CadastraAluno = ({ onLogout }) => {
         />
         
         <main className="main-panel">
-          <h1 className="panel-title">Cadastro de Alunos</h1>
+          <h1 className="panel-title"> Cadastro de Alunos </h1>
           
+
           <StudentForm
-            title="Cadastro de Alunos"
+            title=" Cadastro de Alunos"
             submitButtonText="Salvar"
             onSubmit={handleFormSubmit}
           />

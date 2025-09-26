@@ -8,7 +8,7 @@
     --border-color: #444;
     --shadow-color: rgb(0, 0, 0);
     --bg-header: #000000;
-    --edit-color: #3b82f6;
+    --edit-color: #ffffff;
     --success-color: #28a745;
   }
   
@@ -59,7 +59,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--edit-color), rgba(59, 130, 246, 0.3), var(--edit-color));
+    background: linear-gradient(90deg, var(--edit-color), rgba(0,0,0,0.3), var(--edit-color));
     border-radius: 20px 20px 0 0;
   }
   
@@ -70,9 +70,9 @@
     align-items: flex-start;
     margin-bottom: 35px;
     padding: 25px;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
     border-radius: 15px;
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     animation: headerSlideIn 0.5s ease-out;
   }
   
@@ -96,7 +96,7 @@
   .panel-title {
     font-size: 2.2rem;
     font-weight: 900;
-    margin: 0;
+    margin: 0 0 20px 0;
     color: var(--text-color);
     text-shadow: 0 4px 15px rgba(0,0,0,0.3);
   }
@@ -129,7 +129,8 @@
   
   .back-btn,
   .edit-btn,
-  .cancel-edit-btn {
+  .cancel-edit-btn,
+  .delete-btn {
     padding: 12px 20px;
     border: none;
     border-radius: 10px;
@@ -148,7 +149,8 @@
   
   .back-btn::before,
   .edit-btn::before,
-  .cancel-edit-btn::before {
+  .cancel-edit-btn::before,
+  .delete-btn::before {
     content: '';
     position: absolute;
     top: 0;
@@ -161,7 +163,8 @@
   
   .back-btn:hover::before,
   .edit-btn:hover::before,
-  .cancel-edit-btn:hover::before {
+  .cancel-edit-btn:hover::before,
+  .delete-btn:hover::before {
     left: 100%;
   }
   
@@ -180,15 +183,15 @@
   }
   
   .edit-btn {
-    background: linear-gradient(135deg, var(--edit-color) 0%, rgba(59, 130, 246, 0.8) 100%);
+    background: linear-gradient(135deg, var(--edit-color) 0%, rgba(0,0,0,0.8) 100%);
     color: white;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
   }
   
   .edit-btn:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(59, 130, 246, 0.7) 100%);
+    background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
   }
   
   .cancel-edit-btn {
@@ -198,6 +201,18 @@
   }
   
   .cancel-edit-btn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+  }
+  
+  .delete-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+  }
+  
+  .delete-btn:hover {
     background: linear-gradient(135deg, #c82333 0%, #a71e2a 100%);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
@@ -248,9 +263,9 @@
   }
   
   .mode-indicator.view {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.1) 100%);
-    color: #3b82f6;
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
   }
   
   .mode-indicator.edit {
@@ -306,7 +321,8 @@
     
     .back-btn,
     .edit-btn,
-    .cancel-edit-btn {
+    .cancel-edit-btn,
+    .delete-btn {
       width: 100%;
       justify-content: center;
     }

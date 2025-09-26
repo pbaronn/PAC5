@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Eye, Trash2 } from 'lucide-react';
+import { Eye, Trash2, Edit } from 'lucide-react';
 import './StudentsTable.css';
 
-const StudentsTable = ({ students = [], onView, onDelete }) => {
+const StudentsTable = ({ students = [], onView, onEdit, onDelete }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
 
@@ -27,6 +27,13 @@ const StudentsTable = ({ students = [], onView, onDelete }) => {
   const handleRowClick = (student) => {
     if (onView) {
       onView(student);
+    }
+  };
+
+  const handleEditClick = (student, e) => {
+    e.stopPropagation(); // Previne o clique na linha
+    if (onEdit) {
+      onEdit(student);
     }
   };
 
@@ -72,6 +79,13 @@ const StudentsTable = ({ students = [], onView, onDelete }) => {
                       title="Visualizar aluno"
                     >
                       <Eye size={16} />
+                    </button>
+                    <button
+                      className="table-action-btn edit"
+                      onClick={(e) => handleEditClick(student, e)}
+                      title="Editar aluno"
+                    >
+                      <Edit size={16} />
                     </button>
                     <button
                       className="table-action-btn delete"

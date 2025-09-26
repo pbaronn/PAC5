@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import LoginPage from './pages/LoginPage/LoginPage';
 import BuscaAluno from './pages/BuscaAluno/BuscaAluno';
 import CadastraAluno from './pages/CadastraAluno/CadastraAluno';
+import EditaAluno from './pages/EditaAluno/EditaAluno';
 import VisualizarAluno from './pages/VisualizarAluno/VisualizarAluno';
 import './App.css';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [currentPage, setCurrentPage] = useState('gerenciar'); // 'gerenciar', 'cadastra', 'visualizar'
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState('gerenciar'); // 'gerenciar', 'cadastra', 'edita', 'visualizar'
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
@@ -25,6 +26,7 @@ const App = () => {
   };
 
   const handleNavigation = (page, studentData = null, edit = false) => {
+    console.log('Navegando para:', page, 'com dados:', studentData);
     setCurrentPage(page);
     setSelectedStudent(studentData);
     setEditMode(edit);
@@ -50,6 +52,14 @@ const App = () => {
             onNavigate={handleNavigation}
           />
         );
+      case 'edita':
+        return (
+          <EditaAluno 
+            onLogout={handleLogout}
+            studentData={selectedStudent}
+            onNavigate={handleNavigation}
+          />
+        );
       case 'visualizar':
         return (
           <VisualizarAluno 
@@ -58,6 +68,7 @@ const App = () => {
             onNavigate={handleNavigation}
             editMode={editMode}
             onEditModeChange={setEditMode}
+            onDeleteStudent={handleDeleteStudent}
           />
         );
       case 'gerenciar':

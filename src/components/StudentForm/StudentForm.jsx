@@ -60,7 +60,7 @@ const StudentForm = ({
       )}
 
       <form className="registration-form" onSubmit={handleSubmit}>
-        <h2 className="form-title">{title}</h2>
+       
         
         {/* Seção de Dados do Aluno */}
         <FormSection

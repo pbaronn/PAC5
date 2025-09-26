@@ -10,7 +10,8 @@ const VisualizarAluno = ({
   studentData, 
   onNavigate,
   editMode,
-  onEditModeChange 
+  onEditModeChange,
+  onDeleteStudent
 }) => {
   const handleFormSubmit = (formData) => {
     console.log('Dados do Aluno Atualizados:', formData);
@@ -59,9 +60,21 @@ const VisualizarAluno = ({
     onEditModeChange(false);
   };
 
+  const handleDeleteStudent = () => {
+    if (window.confirm(`Tem certeza que deseja excluir o aluno ${studentData?.nomeAluno || studentData?.name}? Esta ação não pode ser desfeita.`)) {
+      if (onDeleteStudent) {
+        onDeleteStudent(studentData.id);
+        // Volta para a lista após excluir
+        if (onNavigate) {
+          onNavigate('gerenciar');
+        }
+      }
+    }
+  };
+
   return (
     <div className="student-search-container">
-      <Header activeNav="Alunos" onLogout={onLogout} />
+      <Header activeNav="Alunos" onLogout={onLogout} onNavigate={onNavigate} />
       
       <div className="main-content">
         <Sidebar 
@@ -91,13 +104,22 @@ const VisualizarAluno = ({
               </button>
               
               {!editMode ? (
-                <button 
-                  type="button" 
-                  className="edit-btn"
-                  onClick={handleEditToggle}
-                >
-                  ✏️ Editar
-                </button>
+                <>
+                  <button 
+                    type="button" 
+                    className="edit-btn"
+                    onClick={handleEditToggle}
+                  >
+                    ✏️ Editar
+                  </button>
+                  <button 
+                    type="button" 
+                    className="delete-btn"
+                    onClick={handleDeleteStudent}
+                  >
+                    🗑️ Excluir
+                  </button>
+                </>
               ) : (
                 <button 
                   type="button" 

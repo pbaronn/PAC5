@@ -110,6 +110,12 @@ const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
     }
   };
 
+  const handleEditStudent = (student) => {
+    if (onNavigate) {
+      onNavigate('edita', student, false);
+    }
+  };
+
   const handleDeleteStudent = (studentId) => {
     if (onDeleteStudent) {
       onDeleteStudent(studentId);
@@ -120,13 +126,7 @@ const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="student-search-container">
-        <div className="loading-state">Carregando dados...</div>
-      </div>
-    );
-  }
+  
 
   return (
     <div className="student-search-container">
@@ -156,6 +156,7 @@ const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
           <StudentsTable 
             students={students}
             onView={handleViewStudent}
+            onEdit={handleEditStudent}
             onDelete={handleDeleteStudent}
           />
         </main>
