@@ -1,33 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import StudentForm from '../../components/StudentForm/StudentForm';
+import { useStudents } from '../../hooks/useStudents';
+import { useAuth } from '../../hooks/useAuth';
 import './CadastraAluno.css';
 
 const CadastraAluno = ({ onLogout, onNavigate }) => {
-  const handleFormSubmit = (formData) => {
-    console.log('Dados do Aluno:', formData);
-    
+  const [loading, setLoading] = useState(false);
+  const { createStudent } = useStudents();
+  const { logout } = useAuth();
 
+  const handleFormSubmit = async (formData) => {
+    setLoading(true);
     
-    const message = document.createElement('div');
-    message.innerText = 'Formulário enviado com sucesso! Verifique o console para ver os dados.';
-    message.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: var(--primary-color);
-      color: white;
-      padding: 20px 40px;
-      border-radius: 10px;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    `;
-    document.body.appendChild(message);
-    setTimeout(() => {
-      document.body.removeChild(message);
-    }, 3000);
+    try {
+      const result = await createStudent(formData);
+      
+      if (result.success) {
+        // Mostrar mensagem de sucesso
+        const message = document.createElement('div');
+        message.innerText = 'Aluno cadastrado com sucesso!';
+        message.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #28a745;
+          color: white;
+          padding: 20px 40px;
+          border-radius: 10px;
+          z-index: 1000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+          document.body.removeChild(message);
+          // Opcional: navegar para lista de alunos
+          // onNavigate('gerenciar');
+        }, 3000);
+      } else {
+        // Mostrar erro
+        alert(`Erro ao cadastrar aluno: ${result.error}`);
+      }
+    } catch (error) {
+      alert(`Erro inesperado: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSidebarClick = (page) => {
@@ -36,9 +57,16 @@ const CadastraAluno = ({ onLogout, onNavigate }) => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
   return (
     <div className="student-search-container">
-      <Header activeNav="Alunos" onLogout={onLogout} onNavigate={onNavigate} />
+      <Header activeNav="Alunos" onLogout={handleLogout} onNavigate={onNavigate} />
       
       <div className="main-content">
         <Sidebar 
@@ -47,13 +75,19 @@ const CadastraAluno = ({ onLogout, onNavigate }) => {
         />
         
         <main className="main-panel">
-          <h1 className="panel-title"> Cadastro de Alunos </h1>
+          <h1 className="panel-title">Cadastro de Alunos</h1>
           
+          {loading && (
+            <div className="loading-message">
+              Salvando dados do aluno...
+            </div>
+          )}
 
           <StudentForm
-            title=" Cadastro de Alunos"
-            submitButtonText="Salvar"
+            title="Cadastro de Alunos"
+            submitButtonText={loading ? "Salvando..." : "Salvar"}
             onSubmit={handleFormSubmit}
+            disabled={loading}
           />
         </main>
       </div>

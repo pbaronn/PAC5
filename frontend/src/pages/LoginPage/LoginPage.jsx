@@ -1,28 +1,46 @@
 import React, { useState } from 'react';
 import { User, Lock } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 import './LoginPage.css';
-// import lebreImage from '../../assets/images/lebre.png';
-// import logoImage from '../../assets/images/brasao.png';
 
 const LoginPage = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [messageText, setMessageText] = useState('');
   const [showMessage, setShowMessage] = useState(false);
+  
+  const { login } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Dados do login:', { username, password });
-    if (username === 'admin' && password === '123') {
-      setMessageText('Login bem-sucedido!');
+    
+    if (!username || !password) {
+      setMessageText('Por favor, preencha usuário e senha.');
       setShowMessage(true);
-      // Chama a função para navegar para a tela de busca após 2 segundos
-      setTimeout(() => {
-        onLoginSuccess();
-      }, 2000);
-    } else {
-      setMessageText('Usuário ou senha inválidos.');
+      return;
+    }
+
+    setLoading(true);
+    
+    try {
+      const result = await login(username, password);
+      
+      if (result.success) {
+        setMessageText('Login realizado com sucesso!');
+        setShowMessage(true);
+        setTimeout(() => {
+          onLoginSuccess();
+        }, 1500);
+      } else {
+        setMessageText(result.error || 'Erro ao fazer login');
+        setShowMessage(true);
+      }
+    } catch (error) {
+      setMessageText('Erro de conexão. Verifique se o servidor está rodando.');
       setShowMessage(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,6 +77,7 @@ const LoginPage = ({ onLoginSuccess }) => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
             <div className="input-group">
@@ -70,12 +89,24 @@ const LoginPage = ({ onLoginSuccess }) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
-            <button type="submit" className="login-button">Entrar</button>
+            <button 
+              type="submit" 
+              className="login-button"
+              disabled={loading}
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
           </form>
+          
+          <div className="login-info">
+            <small>Usuário padrão: admin | Senha: 123</small>
+          </div>
         </div>
       </div>
+      
       {showMessage && (
         <div className="message-box" onAnimationEnd={() => setShowMessage(false)}>
           {messageText}

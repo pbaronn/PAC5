@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AuthProvider, useAuth } from './hooks/useAuth'; // ou './contexts/AuthContext'
 import LoginPage from './pages/LoginPage/LoginPage';
 import BuscaAluno from './pages/BuscaAluno/BuscaAluno';
 import CadastraAluno from './pages/CadastraAluno/CadastraAluno';
@@ -6,20 +7,18 @@ import EditaAluno from './pages/EditaAluno/EditaAluno';
 import VisualizarAluno from './pages/VisualizarAluno/VisualizarAluno';
 import './App.css';
 
-const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentPage, setCurrentPage] = useState('gerenciar'); // 'gerenciar', 'cadastra', 'edita', 'visualizar'
+const AppContent = () => {
+  const { isAuthenticated, loading, logout } = useAuth();
+  const [currentPage, setCurrentPage] = useState('gerenciar');
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
   const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
     setCurrentPage('gerenciar');
   };
 
   const handleLogout = () => {
-    console.log('Fazendo logout...');
-    setIsLoggedIn(false);
+    logout();
     setCurrentPage('gerenciar');
     setSelectedStudent(null);
     setEditMode(false);
@@ -32,13 +31,17 @@ const App = () => {
     setEditMode(edit);
   };
 
-  const handleDeleteStudent = (studentId) => {
-    console.log('Excluindo aluno:', studentId);
-    // Aqui você implementaria a lógica de exclusão
-  };
+  // Mostrar loading enquanto verifica autenticação
+  if (loading) {
+    return (
+      <div className="app-loading">
+        <div>Carregando...</div>
+      </div>
+    );
+  }
 
   // Se não estiver logado, mostra a tela de login
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />;
   }
 
@@ -68,7 +71,6 @@ const App = () => {
             onNavigate={handleNavigation}
             editMode={editMode}
             onEditModeChange={setEditMode}
-            onDeleteStudent={handleDeleteStudent}
           />
         );
       case 'gerenciar':
@@ -77,7 +79,6 @@ const App = () => {
           <BuscaAluno 
             onLogout={handleLogout}
             onNavigate={handleNavigation}
-            onDeleteStudent={handleDeleteStudent}
           />
         );
     }
@@ -87,6 +88,14 @@ const App = () => {
     <div className="app">
       {renderCurrentPage()}
     </div>
+  );
+};
+
+const App = () => {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 };
 

@@ -383,3 +383,60 @@
     font-size: 16px; /* Previne zoom no iOS */
   }
 }
+
+/* Adicionar ao StudentForm.css existente */
+
+.mode-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 15px;
+  width: fit-content;
+}
+
+.mode-indicator.view {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.mode-indicator.edit {
+  background-color: #fff3e0;
+  color: #f57c00;
+  border: 1px solid #ffcc02;
+}
+
+.conditional-field {
+  margin-left: 20px;
+  border-left: 3px solid #e0e0e0;
+  padding-left: 15px;
+  margin-top: 10px;
+}
+
+.form-wrapper.view-mode .submit-btn,
+.form-wrapper.view-mode .cancel-btn {
+  display: none;
+}
+
+.form-wrapper.edit-mode .submit-btn {
+  background-color: #ff9800;
+}
+
+.form-wrapper.edit-mode .submit-btn:hover {
+  background-color: #f57c00;
+}
+
+/* Estilos para loading */
+.submit-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.submit-btn:disabled:hover {
+  background-color: #ccc;
+}

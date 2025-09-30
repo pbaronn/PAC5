@@ -8,14 +8,19 @@ const SearchFilters = ({
   setSelectedCategory,
   studentName,
   setStudentName,
-  onClear
+  onClear,
+  categories = []
 }) => {
-  const categoriesOptions = [
-    { value: 'Sub-5', label: 'Sub-5' },
-    { value: 'Sub-6', label: 'Sub-6' },
-    { value: 'Sub-7', label: 'Sub-7' },
-    { value: 'Sub-8', label: 'Sub-8' }
-  ];
+  // Mapear categorias da API para o formato esperado pelo FormField
+  const categoriesOptions = categories.map(category => ({
+    value: category,
+    label: category
+  }));
+
+  const handleSearch = () => {
+    // A busca é automática através dos useEffect, mas pode adicionar lógica aqui se necessário
+    console.log('Buscando com filtros:', { selectedCategory, studentName });
+  };
 
   return (
     <div className="search-filters">
@@ -43,7 +48,7 @@ const SearchFilters = ({
       </div>
       
       <div className="filter-buttons">
-        <button type="button" className="search-btn">
+        <button type="button" className="search-btn" onClick={handleSearch}>
           <Search size={16} />
           Buscar
         </button>
