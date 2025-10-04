@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export const useFormData = (initialData = {}) => {
   const [formData, setFormData] = useState({
-    // Dados do Aluno
     nomeAluno: '',
     dataNascimento: '',
     genero: '',
@@ -14,79 +13,56 @@ export const useFormData = (initialData = {}) => {
     bairro: '',
     cidade: '',
     cep: '',
-    
-    // Dados do Responsável
+    observacoes: '',
     nomeResponsavel: '',
     cpfResponsavel: '',
     telefoneResponsavel: '',
     grauParentesco: '',
-    
-    // Contatos de Emergência (não está no backend ainda, mas mantemos no frontend)
-    contatosEmergencia: [
-      { nome: '', telefone: '' }
-    ],
-    autorizaJogosForaCidade: 'nao',
-    
-    // Anamnese (campos extras não mapeados no backend ainda)
-    tipoSanguineo: '',
-    possuiAlergias: 'nao',
+    autorizaJogosForaCidade: '',
+    contatosEmergencia: [{ nome: '', telefone: '' }],
+    possuiAlergias: '',
     detalhesAlergias: '',
-    possuiDoenca: 'nao',
+    possuiDoenca: '',
     detalhesDoenca: '',
-    estaTratandoDoenca: 'nao',
-    teveLesaoOrtopedica: 'nao',
+    estaTratandoDoenca: '',
+    teveLesaoOrtopedica: '',
     detalhesLesao: '',
-    passouPorCirurgia: 'nao',
+    passouPorCirurgia: '',
     detalhesCirurgia: '',
-    usaMedicamentoContinuo: 'nao',
+    usaMedicamentoContinuo: '',
     detalhesMedicamento: '',
-    anamnese: '',
-    
-    // Campos do sistema
-    category: '',
-    status: 'Ativo'
+    tipoSanguineo: '',
+    ...initialData
   });
-
-  // Atualizar formData quando initialData mudar
-  useEffect(() => {
-    if (initialData && Object.keys(initialData).length > 0) {
-      setFormData(prevData => ({
-        ...prevData,
-        ...initialData,
-        // Garantir que campos obrigatórios existam
-        contatosEmergencia: initialData.contatosEmergencia || [{ nome: '', telefone: '' }],
-        // Mapear campos do backend para frontend se necessário
-        nomeAluno: initialData.nomeAluno || initialData.name || '',
-      }));
-    }
-  }, [initialData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
     }));
   };
 
   const addContatoEmergencia = () => {
-    setFormData(prev => ({
-      ...prev,
-      contatosEmergencia: [...prev.contatosEmergencia, { nome: '', telefone: '' }]
+    setFormData((prevData) => ({
+      ...prevData,
+      contatosEmergencia: [...prevData.contatosEmergencia, { nome: '', telefone: '' }]
     }));
   };
 
   const removeContatoEmergencia = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      contatosEmergencia: prev.contatosEmergencia.filter((_, i) => i !== index)
-    }));
+    if (formData.contatosEmergencia.length > 1) {
+      setFormData((prevData) => ({
+        ...prevData,
+        contatosEmergencia: prevData.contatosEmergencia.filter((_, i) => i !== index)
+      }));
+    }
   };
 
   const updateContatoEmergencia = (index, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      contatosEmergencia: prev.contatosEmergencia.map((contato, i) => 
+    setFormData((prevData) => ({
+      ...prevData,
+      contatosEmergencia: prevData.contatosEmergencia.map((contato, i) => 
         i === index ? { ...contato, [field]: value } : contato
       )
     }));
@@ -105,27 +81,25 @@ export const useFormData = (initialData = {}) => {
       bairro: '',
       cidade: '',
       cep: '',
+      observacoes: '',
       nomeResponsavel: '',
       cpfResponsavel: '',
       telefoneResponsavel: '',
       grauParentesco: '',
+      autorizaJogosForaCidade: '',
       contatosEmergencia: [{ nome: '', telefone: '' }],
-      autorizaJogosForaCidade: 'nao',
-      tipoSanguineo: '',
-      possuiAlergias: 'nao',
+      possuiAlergias: '',
       detalhesAlergias: '',
-      possuiDoenca: 'nao',
+      possuiDoenca: '',
       detalhesDoenca: '',
-      estaTratandoDoenca: 'nao',
-      teveLesaoOrtopedica: 'nao',
+      estaTratandoDoenca: '',
+      teveLesaoOrtopedica: '',
       detalhesLesao: '',
-      passouPorCirurgia: 'nao',
+      passouPorCirurgia: '',
       detalhesCirurgia: '',
-      usaMedicamentoContinuo: 'nao',
+      usaMedicamentoContinuo: '',
       detalhesMedicamento: '',
-      anamnese: '',
-      category: '',
-      status: 'Ativo'
+      tipoSanguineo: ''
     });
   };
 

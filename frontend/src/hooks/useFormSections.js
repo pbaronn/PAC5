@@ -1,41 +1,42 @@
 import { useState } from 'react';
 
 export const useFormSections = () => {
-  const [expandedSections, setExpandedSections] = useState({
-    aluno: true,
-    responsavel: false,
-    anamnese: false
-  });
+  const [isAlunoExpanded, setIsAlunoExpanded] = useState(true);
+  const [isResponsavelExpanded, setIsResponsavelExpanded] = useState(false);
+  const [isAnamneseExpanded, setIsAnamneseExpanded] = useState(false);
 
   const handleSectionToggle = (sectionName) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [sectionName]: !prev[sectionName]
-    }));
-  };
+    switch (sectionName) {
+      case 'aluno':
+        setIsAlunoExpanded(!isAlunoExpanded);
+        break;
+      case 'responsavel':
+        setIsResponsavelExpanded(!isResponsavelExpanded);
+        break;
+      case 'anamnese':
+        setIsAnamneseExpanded(!isAnamneseExpanded);
+        break;
+      default:
+        break;
+    }
 
-  const expandAllSections = () => {
-    setExpandedSections({
-      aluno: true,
-      responsavel: true,
-      anamnese: true
-    });
-  };
-
-  const collapseAllSections = () => {
-    setExpandedSections({
-      aluno: false,
-      responsavel: false,
-      anamnese: false
-    });
+    // Scroll para a seção
+    setTimeout(() => {
+      const element = document.querySelector(`[data-section="${sectionName}"]`);
+      if (element) {
+        element.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+      }
+    }, 100);
   };
 
   return {
-    isAlunoExpanded: expandedSections.aluno,
-    isResponsavelExpanded: expandedSections.responsavel,
-    isAnamneseExpanded: expandedSections.anamnese,
-    handleSectionToggle,
-    expandAllSections,
-    collapseAllSections
+    isAlunoExpanded,
+    isResponsavelExpanded,
+    isAnamneseExpanded,
+    handleSectionToggle
   };
 };

@@ -1,0 +1,448 @@
+/* JogosMenu.css */
+:root {
+  --primary-color: #000000;
+  --bg-dark: #121212;
+  --bg-medium: #1f1f1f;
+  --bg-light: #0e0d0d;
+  --text-color: #e0e0e0;
+  --border-color: #444;
+  --shadow-color: rgb(0, 0, 0);
+  --bg-header: #000000;
+}
+
+.jogos-menu-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-medium) 100%);
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  position: relative;
+}
+
+.main-panel {
+  flex: 1;
+  background: linear-gradient(135deg, var(--bg-medium) 0%, var(--bg-light) 100%);
+  margin: 30px;
+  border-radius: 20px;
+  padding: 45px;
+  box-shadow: 0 20px 60px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  overflow-y: auto;
+  height: calc(100vh - 160px);
+  position: relative;
+  animation: panelSlideIn 0.6s ease-out;
+}
+
+@keyframes panelSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.main-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), rgba(0,0,0,0.3), var(--primary-color));
+  border-radius: 20px 20px 0 0;
+}
+
+.panel-title {
+  font-size: 2.8rem;
+  font-weight: 900;
+  margin-bottom: 50px;
+  margin-top: 20px;
+  color: var(--text-color);
+  border-left: 6px solid var(--primary-color);
+  padding-left: 20px;
+  position: relative;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  animation: titleSlideIn 0.8s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.title-icon {
+  color: var(--primary-color);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+@keyframes titleSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.panel-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), rgba(0,0,0,0.3));
+  border-radius: 2px;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin: 60px 0 30px 0;
+  color: var(--text-color);
+  border-left: 6px solid var(--primary-color);
+  padding-left: 20px;
+  position: relative;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  animation: titleSlideIn 0.8s ease-out;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), rgba(0,0,0,0.3));
+  border-radius: 2px;
+}
+
+/* Título específico para "Jogos a finalizar" - mesmo estilo de "Próximos Jogos" */
+.finalizing-title {
+  font-size: 2.8rem !important;
+  font-weight: 900 !important;
+  margin: 60px 0 50px 0 !important;
+  color: var(--text-color);
+  border-left: 6px solid var(--primary-color);
+  padding-left: 20px;
+  position: relative;
+  text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  animation: titleSlideIn 0.8s ease-out;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 0 0 20px !important;
+  margin-left: 0 !important;
+  cursor: default !important;
+}
+
+.finalizing-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), rgba(0,0,0,0.3));
+  border-radius: 2px;
+}
+
+/* Estado de loading */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 25px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Grid de jogos */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+  animation: gamesSlideIn 0.6s ease-out;
+}
+
+@keyframes gamesSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.game-card {
+  background: linear-gradient(135deg, var(--bg-light) 0%, rgba(0,0,0,0.3) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+  padding: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  transition: left 0.5s;
+}
+
+.game-card:hover::before {
+  left: 100%;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  border-color: var(--primary-color);
+}
+
+.game-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.home-team, .away-team {
+  flex: 1;
+  text-align: center;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.game-card:hover .home-team,
+.game-card:hover .away-team {
+  background: rgba(255,255,255,0.1);
+  transform: scale(1.02);
+}
+
+.vs {
+  margin: 0 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fcf8f8;
+  text-shadow: 0 2px 4px #ffffff4d;
+}
+
+.game-date {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 8px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.game-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.6 rem;
+  color: rgba(255,255,255,0.8);
+}
+
+.game-time {
+  background: var(--primary-color);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.game-category {
+  background: rgba(255,255,255,0.1);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Estilos específicos para jogos a finalizar */
+.finalizing-card {
+  border-left: 4px solid #700202;
+  background: linear-gradient(135deg, var(--bg-light) 0%, rgba(255, 165, 0, 0.05) 100%);
+}
+
+.finalizing-card:hover {
+  border-left-color: #a50202;
+  box-shadow: 0 15px 40px rgba(255, 165, 0, 0.1);
+}
+
+.game-status {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: rgba(3, 2, 0, 0.2);
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #000000;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .main-panel {
+    margin: 20px 15px;
+    padding: 30px;
+    height: auto;
+    min-height: calc(100vh - 200px);
+  }
+  
+  .panel-title {
+    font-size: 1.6 rem;
+    margin-bottom: 25px;
+  }
+  
+  .section-title {
+    font-size: 1.8   rem;
+    margin: 40px 0 20px 0;
+  }
+  
+  .games-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-panel {
+    margin: 15px 10px;
+    padding: 25px;
+    border-radius: 15px;
+  }
+  
+  .panel-title {
+    font-size: 1.8rem;
+    padding-left: 15px;
+    border-left-width: 4px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin: 30px 0 15px 0;
+    padding-left: 15px;
+    border-left-width: 4px;
+  }
+  
+  .games-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .game-card {
+    padding: 20px;
+  }
+  
+  .game-teams {
+    font-size: 1.2rem;
+  }
+  
+  .vs {
+    font-size: 1rem;
+    margin: 0 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-panel {
+    margin: 10px 5px;
+    padding: 20px;
+  }
+  
+  .panel-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .section-title {
+    font-size: 1.3rem;
+    margin: 25px 0 15px 0;
+  }
+  
+  .loading-state {
+    height: 50vh;
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .game-card {
+    padding: 15px;
+  }
+  
+  .game-teams {
+    font-size: 1.1rem;
+  }
+  
+  .game-details {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+}
+

@@ -1,61 +1,56 @@
 import React from 'react';
 import { Search, X } from 'lucide-react';
-import FormField from '../FormField/FormField';
 import './SearchFilters.css';
 
-const SearchFilters = ({
-  selectedCategory,
-  setSelectedCategory,
-  studentName,
-  setStudentName,
-  onClear,
-  categories = []
+const SearchFilters = ({ 
+  selectedDate, 
+  setSelectedDate, 
+  opponentName, 
+  setOpponentName, 
+  onClear 
 }) => {
-  // Mapear categorias da API para o formato esperado pelo FormField
-  const categoriesOptions = categories.map(category => ({
-    value: category,
-    label: category
-  }));
-
-  const handleSearch = () => {
-    // A busca é automática através dos useEffect, mas pode adicionar lógica aqui se necessário
-    console.log('Buscando com filtros:', { selectedCategory, studentName });
-  };
-
   return (
     <div className="search-filters">
-      <div className="filter-group">
-        <FormField
-          type="select"
-          label="Categoria:"
-          id="categoria"
-          name="categoria"
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          options={[{ value: '', label: 'Todas as Categorias' }, ...categoriesOptions]}
-        />
-      </div>
-      
-      <div className="filter-group">
-        <FormField
-          label="Aluno:"
-          id="aluno"
-          name="aluno"
-          value={studentName}
-          onChange={(e) => setStudentName(e.target.value)}
-          placeholder="Digite o nome do aluno"
-        />
-      </div>
-      
-      <div className="filter-buttons">
-        <button type="button" className="search-btn" onClick={handleSearch}>
-          <Search size={16} />
-          Buscar
-        </button>
-        <button type="button" className="clear-btn" onClick={onClear}>
-          <X size={16} />
-          Limpar
-        </button>
+      <div className="filters-row">
+        <div className="filter-group">
+          <label htmlFor="date-filter" className="filter-label">
+            Data
+          </label>
+          <input
+            id="date-filter"
+            type="text"
+            className="filter-input"
+            placeholder="DD/MM/AAAA"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="opponent-filter" className="filter-label">
+            Adversário
+          </label>
+          <input
+            id="opponent-filter"
+            type="text"
+            className="filter-input opponent-input"
+            placeholder="Nome do adversário"
+            value={opponentName}
+            onChange={(e) => setOpponentName(e.target.value)}
+          />
+        </div>
+
+        <div className="filter-actions">
+          <button className="search-btn" type="button">
+            <Search size={18} />
+            Buscar
+          </button>
+          
+          <button className="clear-btn" type="button" onClick={onClear}>
+            <X size={18} />
+            Limpar
+          </button>
+        </div>
       </div>
     </div>
   );

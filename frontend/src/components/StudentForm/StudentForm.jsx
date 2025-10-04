@@ -6,19 +6,16 @@ import RadioGroup from '../RadioGroup/RadioGroup';
 import ContatoEmergencia from '../ContatoEmergencia/ContatoEmergencia';
 import { useFormData } from '../../hooks/useFormData';
 import { useFormSections } from '../../hooks/useFormSections';
-import { useStudents } from '../../hooks/useStudents';
 import './StudentForm.css';
 
-const StudentForm = ({
+const StudentForm = ({ 
   title = 'Cadastro de Alunos',
   submitButtonText = 'Salvar',
   onSubmit,
   initialData = {},
   viewMode = false,
-  editMode = false,
-  disabled = false
+  editMode = false
 }) => {
-  const { categories } = useStudents();
   const {
     formData,
     handleInputChange,
@@ -37,28 +34,11 @@ const StudentForm = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (onSubmit && (editMode || (!viewMode && !editMode))) {
-      // Preparar dados para envio - mapear para formato do backend
-      const dataToSubmit = {
-        ...formData,
-        // Remover campos que não existem no backend ou tratar de forma especial
-        contatosEmergencia: undefined, // Remover por enquanto
-        // Adicionar campos obrigatórios se não existirem
-        category: formData.category || 'Sub-6',
-        status: formData.status || 'Ativo'
-      };
-
-      console.log('Enviando dados:', dataToSubmit);
-      onSubmit(dataToSubmit);
+      onSubmit(formData);
     }
   };
 
-  const isFieldDisabled = disabled || (viewMode && !editMode);
-
-  // Mapear categorias para options
-  const categoryOptions = categories.map(cat => ({
-    value: cat,
-    label: cat
-  }));
+  const isFieldDisabled = viewMode && !editMode;
 
   return (
     <div className={`form-wrapper ${viewMode ? 'view-mode' : ''} ${editMode ? 'edit-mode' : ''}`}>
@@ -80,6 +60,8 @@ const StudentForm = ({
       )}
 
       <form className="registration-form" onSubmit={handleSubmit}>
+       
+        
         {/* Seção de Dados do Aluno */}
         <FormSection
           title="Dados do Aluno"
@@ -89,29 +71,30 @@ const StudentForm = ({
         >
           <div className="form-row">
             <FormField
-              label="CPF"
-              id="cpf"
-              name="cpf"
-              value={formData.cpf}
+              label="Nome do Aluno"
+              id="nomeAluno"
+              name="nomeAluno"
+              value={formData.nomeAluno}
               onChange={handleInputChange}
-              placeholder="Digite o CPF" // ← ALTERADO
+              placeholder="Nome completo do aluno"
               required
+              fullWidth
               disabled={isFieldDisabled}
             />
           </div>
 
           <div className="form-row">
             <FormField
-              label="CPF do Responsável"
-              id="cpfResponsavel"
-              name="cpfResponsavel"
-              value={formData.cpfResponsavel}
+              type="date"
+              label="Data Nascimento"
+              id="dataNascimento"
+              name="dataNascimento"
+              value={formData.dataNascimento}
               onChange={handleInputChange}
-              placeholder="Digite o CPF do responsável" // ← ALTERADO
               required
               disabled={isFieldDisabled}
             />
-
+            
             <FormField
               type="select"
               label="Gênero"
@@ -123,8 +106,7 @@ const StudentForm = ({
               disabled={isFieldDisabled}
               options={[
                 { value: 'masculino', label: 'Masculino' },
-                { value: 'feminino', label: 'Feminino' },
-                { value: 'outro', label: 'Outro' }
+                { value: 'feminino', label: 'Feminino' }
               ]}
             />
           </div>
@@ -141,7 +123,7 @@ const StudentForm = ({
               required
               disabled={isFieldDisabled}
             />
-
+            
             <FormField
               type="tel"
               label="Telefone 2"
@@ -165,7 +147,7 @@ const StudentForm = ({
               required
               disabled={isFieldDisabled}
             />
-
+            
             <FormField
               label="RG"
               id="rg"
@@ -185,7 +167,7 @@ const StudentForm = ({
               name="rua"
               value={formData.rua}
               onChange={handleInputChange}
-              placeholder="Nome da rua e número"
+              placeholder="Nome da rua"
               required
               fullWidth
               disabled={isFieldDisabled}
@@ -201,9 +183,12 @@ const StudentForm = ({
               onChange={handleInputChange}
               placeholder="Nome do bairro"
               required
+              fullWidth
               disabled={isFieldDisabled}
             />
+          </div>
 
+          <div className="form-row">
             <FormField
               label="Cidade"
               id="cidade"
@@ -214,9 +199,7 @@ const StudentForm = ({
               required
               disabled={isFieldDisabled}
             />
-          </div>
-
-          <div className="form-row">
+            
             <FormField
               label="CEP"
               id="cep"
@@ -226,35 +209,6 @@ const StudentForm = ({
               placeholder="00000-000"
               required
               disabled={isFieldDisabled}
-            />
-
-            <FormField
-              type="select"
-              label="Categoria"
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              required
-              disabled={isFieldDisabled}
-              options={categoryOptions}
-            />
-          </div>
-
-          <div className="form-row">
-            <FormField
-              type="select"
-              label="Status"
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              required
-              disabled={isFieldDisabled}
-              options={[
-                { value: 'Ativo', label: 'Ativo' },
-                { value: 'Inativo', label: 'Inativo' }
-              ]}
             />
           </div>
         </FormSection>
@@ -277,7 +231,7 @@ const StudentForm = ({
               required
               disabled={isFieldDisabled}
             />
-
+            
             <FormField
               label="CPF do Responsável"
               id="cpfResponsavel"
@@ -302,7 +256,7 @@ const StudentForm = ({
               required
               disabled={isFieldDisabled}
             />
-
+            
             <FormField
               type="select"
               label="Grau de Parentesco"
@@ -315,10 +269,10 @@ const StudentForm = ({
               options={[
                 { value: 'pai', label: 'Pai' },
                 { value: 'mae', label: 'Mãe' },
-                { value: 'avô', label: 'Avô' },
-                { value: 'avó', label: 'Avó' },
-                { value: 'tio', label: 'Tio' },
-                { value: 'tia', label: 'Tia' },
+                { value: 'avo', label: 'Avô/Avó' },
+                { value: 'tio', label: 'Tio/Tia' },
+                { value: 'irmao', label: 'Irmão/Irmã' },
+                { value: 'responsavel', label: 'Responsável Legal' },
                 { value: 'outro', label: 'Outro' }
               ]}
             />
@@ -338,10 +292,7 @@ const StudentForm = ({
               name="autorizaJogosForaCidade"
               value={formData.autorizaJogosForaCidade}
               onChange={handleInputChange}
-              options={[
-                { value: 'sim', label: 'Sim' },
-                { value: 'nao', label: 'Não' }
-              ]}
+              disabled={isFieldDisabled}
             />
           </div>
         </FormSection>
@@ -361,6 +312,7 @@ const StudentForm = ({
               name="tipoSanguineo"
               value={formData.tipoSanguineo}
               onChange={handleInputChange}
+              required
               disabled={isFieldDisabled}
               options={[
                 { value: 'A+', label: 'A+' },
@@ -381,6 +333,7 @@ const StudentForm = ({
               name="possuiAlergias"
               value={formData.possuiAlergias}
               onChange={handleInputChange}
+              disabled={isFieldDisabled}
             />
           </div>
 
@@ -407,6 +360,7 @@ const StudentForm = ({
               name="possuiDoenca"
               value={formData.possuiDoenca}
               onChange={handleInputChange}
+              disabled={isFieldDisabled}
             />
           </div>
 
@@ -432,8 +386,90 @@ const StudentForm = ({
                   name="estaTratandoDoenca"
                   value={formData.estaTratandoDoenca}
                   onChange={handleInputChange}
+                  disabled={isFieldDisabled}
                 />
               </div>
+            </div>
+          )}
+
+          <div className="form-row">
+            <RadioGroup
+              label="Já teve lesão ortopédica?"
+              name="teveLesaoOrtopedica"
+              value={formData.teveLesaoOrtopedica}
+              onChange={handleInputChange}
+              disabled={isFieldDisabled}
+            />
+          </div>
+
+          {formData.teveLesaoOrtopedica === 'sim' && (
+            <div className="form-row conditional-field">
+              <FormField
+                type="textarea"
+                label="Detalhes da Lesão"
+                id="detalhesLesao"
+                name="detalhesLesao"
+                value={formData.detalhesLesao}
+                onChange={handleInputChange}
+                placeholder="Descreva a lesão ortopédica..."
+                required
+                fullWidth
+                disabled={isFieldDisabled}
+              />
+            </div>
+          )}
+
+          <div className="form-row">
+            <RadioGroup
+              label="Já passou por cirurgia?"
+              name="passouPorCirurgia"
+              value={formData.passouPorCirurgia}
+              onChange={handleInputChange}
+              disabled={isFieldDisabled}
+            />
+          </div>
+
+          {formData.passouPorCirurgia === 'sim' && (
+            <div className="form-row conditional-field">
+              <FormField
+                type="textarea"
+                label="Detalhes da Cirurgia"
+                id="detalhesCirurgia"
+                name="detalhesCirurgia"
+                value={formData.detalhesCirurgia}
+                onChange={handleInputChange}
+                placeholder="Descreva a cirurgia realizada..."
+                required
+                fullWidth
+                disabled={isFieldDisabled}
+              />
+            </div>
+          )}
+
+          <div className="form-row">
+            <RadioGroup
+              label="Faz uso contínuo de algum medicamento?"
+              name="usaMedicamentoContinuo"
+              value={formData.usaMedicamentoContinuo}
+              onChange={handleInputChange}
+              disabled={isFieldDisabled}
+            />
+          </div>
+
+          {formData.usaMedicamentoContinuo === 'sim' && (
+            <div className="form-row conditional-field">
+              <FormField
+                type="textarea"
+                label="Detalhes do Medicamento"
+                id="detalhesMedicamento"
+                name="detalhesMedicamento"
+                value={formData.detalhesMedicamento}
+                onChange={handleInputChange}
+                placeholder="Descreva o medicamento e posologia..."
+                required
+                fullWidth
+                disabled={isFieldDisabled}
+              />
             </div>
           )}
 
@@ -458,11 +494,11 @@ const StudentForm = ({
         {/* Botões - só aparecem se não for modo visualização OU se estiver editando */}
         {(!viewMode || editMode) && submitButtonText && (
           <div className="btn-container">
-            <button type="submit" className="submit-btn" disabled={disabled}>
+            <button type="submit" className="submit-btn">
               <Save size={16} />
-              {disabled ? 'Salvando...' : submitButtonText}
+              {submitButtonText}
             </button>
-            <button type="button" className="cancel-btn" disabled={disabled}>
+            <button type="button" className="cancel-btn">
               <X size={16} />
               Cancelar
             </button>

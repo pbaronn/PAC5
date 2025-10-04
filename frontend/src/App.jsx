@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
-import { AuthProvider, useAuth } from './hooks/useAuth'; // ou './contexts/AuthContext'
 import LoginPage from './pages/LoginPage/LoginPage';
 import BuscaAluno from './pages/BuscaAluno/BuscaAluno';
 import CadastraAluno from './pages/CadastraAluno/CadastraAluno';
 import EditaAluno from './pages/EditaAluno/EditaAluno';
 import VisualizarAluno from './pages/VisualizarAluno/VisualizarAluno';
+import JogosMenu from './pages/JogosMenu/JogosMenu';
+import BuscaJogos from './pages/BuscaJogos/BuscaJogos';
+import CadastrarJogo from './pages/CadastrarJogo/CadastrarJogo';
 import './App.css';
 
-const AppContent = () => {
-  const { isAuthenticated, loading, logout } = useAuth();
-  const [currentPage, setCurrentPage] = useState('gerenciar');
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState('gerenciar'); // 'gerenciar', 'cadastra', 'edita', 'visualizar', 'jogos-menu', 'buscar-jogos', 'cadastrar-jogo'
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [editMode, setEditMode] = useState(false);
 
   const handleLoginSuccess = () => {
+    setIsLoggedIn(true);
     setCurrentPage('gerenciar');
   };
 
   const handleLogout = () => {
-    logout();
+    console.log('Fazendo logout...');
+    setIsLoggedIn(false);
     setCurrentPage('gerenciar');
     setSelectedStudent(null);
     setEditMode(false);
@@ -31,17 +35,13 @@ const AppContent = () => {
     setEditMode(edit);
   };
 
-  // Mostrar loading enquanto verifica autenticação
-  if (loading) {
-    return (
-      <div className="app-loading">
-        <div>Carregando...</div>
-      </div>
-    );
-  }
+  const handleDeleteStudent = (studentId) => {
+    console.log('Excluindo aluno:', studentId);
+    // Aqui você implementaria a lógica de exclusão
+  };
 
   // Se não estiver logado, mostra a tela de login
-  if (!isAuthenticated) {
+  if (!isLoggedIn) {
     return <LoginPage onLoginSuccess={handleLoginSuccess} />;
   }
 
@@ -71,6 +71,28 @@ const AppContent = () => {
             onNavigate={handleNavigation}
             editMode={editMode}
             onEditModeChange={setEditMode}
+            onDeleteStudent={handleDeleteStudent}
+          />
+        );
+      case 'jogos-menu':
+        return (
+          <JogosMenu 
+            onLogout={handleLogout}
+            onNavigate={handleNavigation}
+          />
+        );
+      case 'buscar-jogos':
+        return (
+          <BuscaJogos 
+            onLogout={handleLogout}
+            onNavigate={handleNavigation}
+          />
+        );
+      case 'cadastrar-jogo':
+        return (
+          <CadastrarJogo 
+            onLogout={handleLogout}
+            onNavigate={handleNavigation}
           />
         );
       case 'gerenciar':
@@ -79,6 +101,7 @@ const AppContent = () => {
           <BuscaAluno 
             onLogout={handleLogout}
             onNavigate={handleNavigation}
+            onDeleteStudent={handleDeleteStudent}
           />
         );
     }
@@ -88,14 +111,6 @@ const AppContent = () => {
     <div className="app">
       {renderCurrentPage()}
     </div>
-  );
-};
-
-const App = () => {
-  return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
   );
 };
 

@@ -122,37 +122,3 @@ body {
     overflow-y: auto;
   }
 }
-
-/* Adicionar ao App.css existente */
-
-.app-loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.loading-message {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-  font-style: italic;
-}
-
-.error-message {
-  text-align: center;
-  padding: 20px;
-  color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 5px;
-  margin: 10px 0;
-}
-
-.login-info {
-  text-align: center;
-  margin-top: 15px;
-  color: #888;
-}
