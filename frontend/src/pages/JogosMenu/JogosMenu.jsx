@@ -58,7 +58,7 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
       time: '15:30',
       category: 'Sub-7',
       location: 'Campo Principal',
-      status: 'Aguardando resultado'
+      status: 'Editar'
     },
     { 
       id: 6, 
@@ -68,7 +68,7 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
       time: '16:00',
       category: 'Sub-8',
       location: 'Campo 2',
-      status: 'Aguardando resultado'
+      status: 'Editar'
     },
     { 
       id: 7, 
@@ -78,7 +78,7 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
       time: '14:30',
       category: 'Sub-6',
       location: 'Campo Principal',
-      status: 'Aguardando resultado'
+      status: 'Editar'
     }
   ];
 
@@ -114,8 +114,9 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
   };
 
   const handleGameClick = (game) => {
-    // Aqui você pode implementar a navegação para detalhes do jogo
-    console.log('Jogo selecionado:', game);
+    if (onNavigate) {
+      onNavigate('visualizar-jogo', { gameData: game });
+    }
   };
 
   return (
@@ -159,12 +160,28 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
                     <span className="game-time">{game.time}</span>
                     <span className="game-category">{game.category}</span>
                   </div>
+                  <div className="game-actions">
+                    <button className="action-btn view-btn" onClick={(e) => {
+                      e.stopPropagation();
+                      handleGameClick(game);
+                    }}>
+                      Visualizar
+                    </button>
+                    <button className="action-btn finalize-btn" onClick={(e) => {
+                      e.stopPropagation();
+                      if (onNavigate) {
+                        onNavigate('finalizar-jogo', { gameData: game });
+                      }
+                    }}>
+                      Finalizar
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           )}
 
-          <h2 className="section-title finalizing-title">Jogos a finalizar</h2>
+          <h2 className="section-title finalizing-title">Jogos finalizados</h2>
           
           {loading ? (
             <div className="loading-state">
@@ -177,7 +194,11 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
                 <div 
                   key={game.id} 
                   className="game-card finalizing-card"
-                  onClick={() => handleGameClick(game)}
+                  onClick={() => {
+                    if (onNavigate) {
+                      onNavigate('jogo-finalizado', { gameData: game });
+                    }
+                  }}
                 >
                   <div className="game-teams">
                     <span className="home-team">{game.homeTeam}</span>

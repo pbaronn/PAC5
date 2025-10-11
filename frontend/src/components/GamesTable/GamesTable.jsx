@@ -117,7 +117,7 @@ const GamesTable = ({ games, onView, onEdit, onDelete, loading }) => {
                     <button 
                       className="action-btn view-btn"
                       onClick={() => onView(game)}
-                      title="Visualizar"
+                      title="Editar"
                     >
                       <Eye size={16} />
                     </button>

@@ -11,6 +11,7 @@ const Header = ({ activeNav = 'Alunos', onLogout, onNavigate }) => {
   const imagemConfiguracoes = '/img/icon_configurações.png';
 
   const navItems = [
+    { name: 'Menu', icon: imagemJEC, alt: 'Menu' },
     { name: 'Alunos', icon: imagemAlunos, alt: 'Ícone de alunos' },
     { name: 'Categorias', icon: imagemCategorias, alt: 'Ícone de categorias' },
     { name: 'Jogos', icon: imagemJogos, alt: 'Ícone de jogos' },
@@ -19,10 +20,18 @@ const Header = ({ activeNav = 'Alunos', onLogout, onNavigate }) => {
   ];
 
   const handleNavClick = (navItem) => {
-    if (navItem === 'Alunos' && onNavigate) {
+    if (navItem === 'Menu' && onNavigate) {
+      onNavigate('dashboard');
+    } else if (navItem === 'Alunos' && onNavigate) {
       onNavigate('gerenciar');
     } else if (navItem === 'Jogos' && onNavigate) {
       onNavigate('jogos-menu');
+    } else if (navItem === 'Categorias' && onNavigate) {
+      onNavigate('menu-categorias');
+    } else if (navItem === 'Treinos' && onNavigate) {
+      onNavigate('treinos');
+    } else if (navItem === 'Configurações' && onNavigate) {
+      onNavigate('configuracoes');
     }
     // Adicione outros handlers conforme necessário
   };
