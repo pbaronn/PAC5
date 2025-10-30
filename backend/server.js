@@ -1,27 +1,67 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { sequelize } = require('./config/database');
+const { connectDB } = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware CORRIGIDO
+// Middleware CORS mais específico
 app.use(cors({
-  origin: [
-    'http://localhost:3000', 
-    'http://localhost:5173',  // ← ADICIONAR ESTA LINHA
-    'http://127.0.0.1:3000',
-    'http://127.0.0.1:5173'   // ← ADICIONAR ESTA LINHA
-  ],
+  origin: function (origin, callback) {
+    // Permitir requisições sem origin (mobile apps, postman, etc)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:5173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:3001',
+      'http://127.0.0.1:5173'
+    ];
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('Origem bloqueada pelo CORS:', origin);
+      callback(new Error('Não permitido pelo CORS'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH'],
+  allowedHeaders: [
+    'Origin',
+    'X-Requested-With',
+    'Content-Type',
+    'Accept',
+    'Authorization',
+    'Cache-Control',
+    'X-HTTP-Method-Override'
+  ],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
+
+// Middleware adicional para preflight requests
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin,X-Requested-With,Content-Type,Accept,Authorization,Cache-Control,X-HTTP-Method-Override');
+  
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,6 +69,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -52,11 +93,8 @@ app.use((req, res) => {
 // Database connection and server start
 const startServer = async () => {
   try {
-    await sequelize.authenticate();
-    console.log('✅ Conexão com MySQL estabelecida com sucesso!');
-    
-    await sequelize.sync({ force: false });
-    console.log('✅ Modelos sincronizados com o banco de dados!');
+    await connectDB();
+    console.log('✅ Conexão com MongoDB Atlas estabelecida com sucesso!');
     
     app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);

@@ -1,12 +1,17 @@
-const { sequelize } = require('../config/database');
+const { connectDB } = require('../config/database');
 const User = require('../models/User');
 const Student = require('../models/Student');
 
 const seedData = async () => {
   try {
-    // Força a recriação das tabelas (cuidado em produção!)
-    await sequelize.sync({ force: true });
-    console.log('✅ Tabelas criadas!');
+    // Conectar com MongoDB
+    await connectDB();
+    console.log('✅ Conectado ao MongoDB!');
+
+    // Limpar dados existentes (cuidado em produção!)
+    await User.deleteMany({});
+    await Student.deleteMany({});
+    console.log('✅ Dados existentes removidos!');
 
     // Criar usuário admin
     await User.create({
@@ -116,7 +121,7 @@ const seedData = async () => {
       }
     ];
 
-    await Student.bulkCreate(students);
+    await Student.insertMany(students);
     console.log('✅ Alunos de exemplo criados!');
 
     console.log('\n🎉 Seed executado com sucesso!');

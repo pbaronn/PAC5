@@ -15,7 +15,8 @@ const login = async (req, res) => {
     }
 
     const user = await User.findOne({ 
-      where: { username, active: true } 
+      username: username, 
+      active: true 
     });
 
     if (!user) {
@@ -32,7 +33,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user.id, username: user.username },
+      { userId: user._id, username: user.username },
       JWT_SECRET,
       { expiresIn: JWT_EXPIRES }
     );
@@ -41,7 +42,7 @@ const login = async (req, res) => {
       message: 'Login realizado com sucesso',
       token,
       user: {
-        id: user.id,
+        id: user._id,
         username: user.username,
         name: user.name,
         email: user.email
@@ -62,7 +63,7 @@ const validateToken = async (req, res) => {
     res.json({
       valid: true,
       user: {
-        id: user.id,
+        id: user._id,
         username: user.username,
         name: user.name,
         email: user.email
@@ -95,7 +96,7 @@ const register = async (req, res) => {
     }
 
     // Verificar se usuário já existe
-    const existingUser = await User.findOne({ where: { username } });
+    const existingUser = await User.findOne({ username: username });
     if (existingUser) {
       return res.status(400).json({
         message: 'Nome de usuário já existe'
@@ -104,7 +105,7 @@ const register = async (req, res) => {
 
     // Verificar se email já existe (se fornecido)
     if (email) {
-      const existingEmail = await User.findOne({ where: { email } });
+      const existingEmail = await User.findOne({ email: email });
       if (existingEmail) {
         return res.status(400).json({
           message: 'Email já cadastrado'
@@ -115,18 +116,18 @@ const register = async (req, res) => {
     // Criar usuário
     const user = await User.create({
       username,
-      password, // Será hasheado automaticamente pelo hook
+      password, // Será hasheado automaticamente pelo middleware
       name,
       email: email || null,
       active: true
     });
 
-    console.log('Usuário criado:', user.id);
+    console.log('Usuário criado:', user._id);
 
     res.status(201).json({
       message: 'Usuário criado com sucesso',
       user: {
-        id: user.id,
+        id: user._id,
         username: user.username,
         name: user.name,
         email: user.email

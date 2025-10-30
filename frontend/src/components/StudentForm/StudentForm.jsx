@@ -14,7 +14,8 @@ const StudentForm = ({
   onSubmit,
   initialData = {},
   viewMode = false,
-  editMode = false
+  editMode = false,
+  disabled = false
 }) => {
   const {
     formData,
@@ -33,12 +34,12 @@ const StudentForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit && (editMode || (!viewMode && !editMode))) {
+    if (onSubmit && (editMode || (!viewMode && !editMode)) && !disabled) {
       onSubmit(formData);
     }
   };
 
-  const isFieldDisabled = viewMode && !editMode;
+  const isFieldDisabled = (viewMode && !editMode) || disabled;
 
   return (
     <div className={`form-wrapper ${viewMode ? 'view-mode' : ''} ${editMode ? 'edit-mode' : ''}`}>
@@ -494,11 +495,15 @@ const StudentForm = ({
         {/* Botões - só aparecem se não for modo visualização OU se estiver editando */}
         {(!viewMode || editMode) && submitButtonText && (
           <div className="btn-container">
-            <button type="submit" className="submit-btn">
+            <button 
+              type="submit" 
+              className="submit-btn" 
+              disabled={disabled}
+            >
               <Save size={16} />
               {submitButtonText}
             </button>
-            <button type="button" className="cancel-btn">
+            <button type="button" className="cancel-btn" disabled={disabled}>
               <X size={16} />
               Cancelar
             </button>

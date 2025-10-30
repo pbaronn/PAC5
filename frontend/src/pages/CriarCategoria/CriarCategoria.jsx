@@ -1,37 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X, Search } from 'lucide-react';
+import { Plus, X, Search, Save, ArrowLeft } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import CategoriesSidebar from '../../components/CategoriesSidebar/CategoriesSidebar';
+import { categoryService, studentService } from '../../services/api';
 import './CriarCategoria.css';
 
 const CriarCategoria = ({ onLogout, onNavigate }) => {
-  const [categoryName, setCategoryName] = useState('');
+  const [formData, setFormData] = useState({
+    nome: '',
+    descricao: '',
+    cor: '#3B82F6'
+  });
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [availableStudents, setAvailableStudents] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
-
-  // Dados mockados para alunos disponíveis
-  const mockStudents = [
-    { id: 1, name: 'João Silva', age: 12, position: 'Atacante' },
-    { id: 2, name: 'Maria Santos', age: 11, position: 'Meio-campo' },
-    { id: 3, name: 'Pedro Costa', age: 13, position: 'Defensor' },
-    { id: 4, name: 'Ana Oliveira', age: 10, position: 'Goleiro' },
-    { id: 5, name: 'Carlos Lima', age: 12, position: 'Atacante' },
-    { id: 6, name: 'Fernanda Souza', age: 11, position: 'Meio-campo' },
-    { id: 7, name: 'Rafael Mendes', age: 13, position: 'Defensor' },
-    { id: 8, name: 'Juliana Alves', age: 10, position: 'Goleiro' },
-    { id: 9, name: 'Lucas Ferreira', age: 12, position: 'Atacante' },
-    { id: 10, name: 'Camila Rodrigues', age: 11, position: 'Meio-campo' }
-  ];
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
-    // Simula carregamento dos dados
-    setTimeout(() => {
-      setAvailableStudents(mockStudents);
-      setLoading(false);
-    }, 500);
+    loadAvailableStudents();
   }, []);
+
+  const loadAvailableStudents = async () => {
+    try {
+      setLoading(true);
+      const response = await studentService.getAll();
+      
+      // Filtrar apenas alunos sem categoria
+      const studentsWithoutCategory = response.students.filter(student => 
+        !student.category || student.category === '' || student.category === 'Sem categoria'
+      );
+      
+      setAvailableStudents(studentsWithoutCategory);
+    } catch (error) {
+      console.error('Erro ao carregar alunos:', error);
+      setError('Erro ao carregar alunos disponíveis');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const showSuccessMessage = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(null), 3000);
+  };
 
   const handleSidebarClick = (page) => {
     if (onNavigate) {
@@ -45,38 +59,69 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
     }
   };
 
-  const handleSave = () => {
-    if (!categoryName.trim()) {
-      alert('Por favor, insira o nome da categoria.');
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSave = async () => {
+    if (!formData.nome.trim()) {
+      setError('Por favor, insira o nome da categoria.');
       return;
     }
 
-    const categoryData = {
-      name: categoryName,
-      students: selectedStudents
-    };
+    try {
+      setSaving(true);
+      setError(null);
 
-    console.log('Categoria criada:', categoryData);
-    alert('Categoria criada com sucesso!');
-    
-    if (onNavigate) {
-      onNavigate('menu-categorias');
+      // Criar a categoria
+      const response = await categoryService.create(formData);
+      
+      // Se há alunos selecionados, atualizar eles para a nova categoria
+      if (selectedStudents.length > 0) {
+        const updatePromises = selectedStudents.map(student => 
+          studentService.update(student._id || student.id, {
+            ...student,
+            category: formData.nome
+          })
+        );
+        
+        await Promise.all(updatePromises);
+      }
+
+      showSuccessMessage(`Categoria "${formData.nome}" criada com sucesso!`);
+      
+      // Limpar formulário
+      setFormData({ nome: '', descricao: '', cor: '#3B82F6' });
+      setSelectedStudents([]);
+      
+      // Recarregar alunos disponíveis
+      await loadAvailableStudents();
+      
+    } catch (error) {
+      console.error('Erro ao criar categoria:', error);
+      setError(error.message || 'Erro ao criar categoria');
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleAddStudent = (student) => {
-    if (!selectedStudents.find(s => s.id === student.id)) {
+    if (!selectedStudents.find(s => (s._id || s.id) === (student._id || student.id))) {
       setSelectedStudents([...selectedStudents, student]);
     }
   };
 
   const handleRemoveStudent = (studentId) => {
-    setSelectedStudents(selectedStudents.filter(s => s.id !== studentId));
+    setSelectedStudents(selectedStudents.filter(s => (s._id || s.id) !== studentId));
   };
 
   const filteredStudents = availableStudents.filter(student =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    !selectedStudents.find(s => s.id === student.id)
+    (student.nomeAluno || student.name || '').toLowerCase().includes(searchTerm.toLowerCase()) &&
+    !selectedStudents.find(s => (s._id || s.id) === (student._id || student.id))
   );
 
   if (loading) {
@@ -111,20 +156,90 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
         />
         
         <main className="main-panel">
-          <h1 className="panel-title">Criar Nova Categoria</h1>
+          <div className="panel-header">
+            <h1 className="panel-title">Criar Nova Categoria</h1>
+            <button 
+              type="button" 
+              className="back-btn"
+              onClick={handleBack}
+            >
+              <ArrowLeft size={16} />
+              Voltar
+            </button>
+          </div>
+          
+          {error && (
+            <div className="error-message" style={{
+              color: 'red',
+              background: 'rgba(255,0,0,0.1)',
+              padding: '10px',
+              borderRadius: '5px',
+              marginBottom: '20px',
+              border: '1px solid rgba(255,0,0,0.3)'
+            }}>
+              {error}
+            </div>
+          )}
+          
+          {successMessage && (
+            <div className="success-message" style={{
+              color: 'green',
+              background: 'rgba(0,255,0,0.1)',
+              padding: '10px',
+              borderRadius: '5px',
+              marginBottom: '20px',
+              border: '1px solid rgba(0,255,0,0.3)'
+            }}>
+              {successMessage}
+            </div>
+          )}
           
           {/* Formulário da categoria */}
           <div className="form-section">
+            <h2 className="section-title">Informações da Categoria</h2>
+            
             <div className="form-group">
-              <label htmlFor="categoryName">Nome da Categoria</label>
+              <label htmlFor="nome">Nome da Categoria *</label>
               <input
-                id="categoryName"
+                id="nome"
+                name="nome"
                 type="text"
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
+                value={formData.nome}
+                onChange={handleInputChange}
                 placeholder="Ex: Sub-12"
                 className="form-input"
+                disabled={saving}
               />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="descricao">Descrição</label>
+              <textarea
+                id="descricao"
+                name="descricao"
+                value={formData.descricao}
+                onChange={handleInputChange}
+                placeholder="Descrição opcional da categoria..."
+                className="form-input"
+                rows={3}
+                disabled={saving}
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="cor">Cor da Categoria</label>
+              <div className="color-input-group">
+                <input
+                  id="cor"
+                  name="cor"
+                  type="color"
+                  value={formData.cor}
+                  onChange={handleInputChange}
+                  className="color-input"
+                  disabled={saving}
+                />
+                <span className="color-preview" style={{ backgroundColor: formData.cor }}></span>
+              </div>
             </div>
           </div>
 
@@ -146,18 +261,22 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
 
             {/* Lista de alunos disponíveis */}
             <div className="students-container">
-              <h3 className="subsection-title">Alunos Disponíveis</h3>
+              <h3 className="subsection-title">Alunos Disponíveis ({filteredStudents.length})</h3>
               <div className="students-list">
                 {filteredStudents.map((student) => (
-                  <div key={student.id} className="student-item">
+                  <div key={student._id || student.id} className="student-item">
                     <div className="student-info">
-                      <span className="student-name">{student.name}</span>
-                      <span className="student-details">{student.age} anos • {student.position}</span>
+                      <span className="student-name">{student.nomeAluno || student.name}</span>
+                      <span className="student-details">
+                        {student.cpf ? `CPF: ${student.cpf}` : 'Sem CPF'} • 
+                        {student.telefone ? ` Tel: ${student.telefone}` : ' Sem telefone'}
+                      </span>
                     </div>
                     <button
                       className="add-student-btn"
                       onClick={() => handleAddStudent(student)}
                       title="Adicionar aluno"
+                      disabled={saving}
                     >
                       <Plus size={18} />
                     </button>
@@ -166,7 +285,7 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
                 
                 {filteredStudents.length === 0 && (
                   <div className="no-results">
-                    <p>Nenhum aluno encontrado.</p>
+                    <p>{searchTerm ? 'Nenhum aluno encontrado com este nome.' : 'Todos os alunos já possuem categoria.'}</p>
                   </div>
                 )}
               </div>
@@ -178,15 +297,19 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
                 <h3 className="subsection-title">Alunos Selecionados ({selectedStudents.length})</h3>
                 <div className="selected-students-list">
                   {selectedStudents.map((student) => (
-                    <div key={student.id} className="selected-student-item">
+                    <div key={student._id || student.id} className="selected-student-item">
                       <div className="student-info">
-                        <span className="student-name">{student.name}</span>
-                        <span className="student-details">{student.age} anos • {student.position}</span>
+                        <span className="student-name">{student.nomeAluno || student.name}</span>
+                        <span className="student-details">
+                          {student.cpf ? `CPF: ${student.cpf}` : 'Sem CPF'} • 
+                          {student.telefone ? ` Tel: ${student.telefone}` : ' Sem telefone'}
+                        </span>
                       </div>
                       <button
                         className="remove-student-btn"
-                        onClick={() => handleRemoveStudent(student.id)}
+                        onClick={() => handleRemoveStudent(student._id || student.id)}
                         title="Remover aluno"
+                        disabled={saving}
                       >
                         <X size={18} />
                       </button>
@@ -199,11 +322,29 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
 
           {/* Botões de ação */}
           <div className="form-actions">
-            <button className="cancel-btn" onClick={handleBack}>
+            <button 
+              className="cancel-btn" 
+              onClick={handleBack}
+              disabled={saving}
+            >
               Cancelar
             </button>
-            <button className="save-btn" onClick={handleSave}>
-              Salvar Categoria
+            <button 
+              className="save-btn" 
+              onClick={handleSave}
+              disabled={saving || !formData.nome.trim()}
+            >
+              {saving ? (
+                <>
+                  <div className="spinner"></div>
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <Save size={16} />
+                  Salvar Categoria
+                </>
+              )}
             </button>
           </div>
         </main>

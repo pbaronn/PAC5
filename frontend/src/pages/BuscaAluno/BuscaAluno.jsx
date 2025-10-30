@@ -3,6 +3,8 @@ import Header from '../../components/Header/Header';
 import Sidebar from '../../components/Sidebar/Sidebar';
 import SearchFilters from '../../components/SearchFilters/SearchFilters';
 import StudentsTable from '../../components/StudentsTable/StudentsTable';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import { studentService } from '../../services/api';
 import './BuscaAluno.css';
 
 const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
@@ -11,67 +13,53 @@ const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [studentName, setStudentName] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  
+  // Estados para modal de confirmação
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState(null);
 
-  // Dados mockados para teste (remova quando tiver API real)
-  const mockStudents = [
-    { 
-      id: 1, 
-      name: 'João Silva', 
-      category: 'Sub-7', 
-      status: 'Ativo',
-      nomeAluno: 'João Silva',
-      dataNascimento: '2017-05-15',
-      genero: 'masculino',
-      telefone: '(11) 99999-1111',
-      telefone2: '(11) 8888-1111',
-      cpf: '123.456.789-01',
-      rg: '12.345.678-9',
-      rua: 'Rua das Flores, 123',
-      bairro: 'Centro',
-      cidade: 'São Paulo',
-      cep: '01234-567',
-      nomeResponsavel: 'Maria Silva',
-      cpfResponsavel: '987.654.321-09',
-      telefoneResponsavel: '(11) 77777-1111',
-      grauParentesco: 'mae'
-    },
-    { 
-      id: 2, 
-      name: 'Maria Santos', 
-      category: 'Sub-6', 
-      status: 'Ativo',
-      nomeAluno: 'Maria Santos',
-      dataNascimento: '2018-03-22',
-      genero: 'feminino',
-      telefone: '(11) 99999-2222',
-      cpf: '123.456.789-02',
-      rg: '12.345.678-8'
-    },
-    { 
-      id: 3, 
-      name: 'Pedro Oliveira', 
-      category: 'Sub-8', 
-      status: 'Inativo',
-      nomeAluno: 'Pedro Oliveira',
-      dataNascimento: '2016-08-10',
-      genero: 'masculino',
-      telefone: '(11) 99999-3333',
-      cpf: '123.456.789-03',
-      rg: '12.345.678-7'
-    }
-  ];
+  // Função para mostrar mensagem de sucesso temporária
+  const showSuccessMessage = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(null), 3000);
+  };
 
+  // Função para buscar alunos do backend
   const fetchStudents = async () => {
-    setLoading(true);
     try {
-      // Simula carregamento
-      setTimeout(() => {
-        setAllStudents(mockStudents);
-        setStudents(mockStudents);
-        setLoading(false);
-      }, 500);
+      setLoading(true);
+      setError(null);
+      
+      console.log('Buscando alunos do backend...');
+      const response = await studentService.getAll();
+      
+      console.log('Alunos recebidos:', response);
+      
+      // Normalizar dados para compatibilidade com o componente existente
+      const normalizedStudents = response.students.map(student => ({
+        id: student._id,
+        name: student.nomeAluno,
+        category: student.category,
+        status: student.status,
+        // Manter todos os dados originais também (incluindo a data original)
+        ...student,
+        // Garantir que a data esteja preservada
+        dataNascimento: student.dataNascimento
+      }));
+      
+      setAllStudents(normalizedStudents);
+      setStudents(normalizedStudents);
+      
     } catch (error) {
       console.error('Erro ao buscar alunos:', error);
+      setError(error.message || 'Erro ao carregar alunos');
+      
+      // Fallback para dados vazios em caso de erro
+      setAllStudents([]);
+      setStudents([]);
+    } finally {
       setLoading(false);
     }
   };
@@ -116,13 +104,40 @@ const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
     }
   };
 
-  const handleDeleteStudent = (studentId) => {
-    if (onDeleteStudent) {
-      onDeleteStudent(studentId);
-      // Remove o aluno da lista local
-      const updatedStudents = allStudents.filter(student => student.id !== studentId);
-      setAllStudents(updatedStudents);
-      setStudents(updatedStudents);
+  const handleDeleteStudent = (student) => {
+    setStudentToDelete(student);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteStudent = async () => {
+    if (!studentToDelete) return;
+    
+    try {
+      // Usar _id (ID do MongoDB) em vez de id normalizado
+      const studentId = studentToDelete._id || studentToDelete.id;
+      console.log('Deletando aluno com ID:', studentId);
+      
+      if (!studentId) {
+        throw new Error('ID do aluno não encontrado');
+      }
+      
+      await studentService.delete(studentId);
+      
+      // Recarregar a lista do servidor para garantir dados atualizados
+      await fetchStudents();
+      
+      console.log('Aluno deletado com sucesso');
+      
+      // Mostrar mensagem de sucesso
+      setError(null);
+      showSuccessMessage(`Aluno "${studentToDelete.name || studentToDelete.nomeAluno}" foi excluído com sucesso!`);
+      
+    } catch (error) {
+      console.error('Erro ao deletar aluno:', error);
+      setError('Erro ao deletar aluno: ' + (error.message || 'Erro desconhecido'));
+    } finally {
+      setStudentToDelete(null);
+      setShowDeleteModal(false);
     }
   };
 
@@ -145,22 +160,75 @@ const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
         <main className="main-panel">
           <h1 className="panel-title">Gerenciar Alunos</h1>
           
-          <SearchFilters
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            studentName={studentName}
-            setStudentName={setStudentName}
-            onClear={handleClear}
-          />
+          {error && (
+            <div className="error-message" style={{
+              color: 'red',
+              background: 'rgba(255,0,0,0.1)',
+              padding: '10px',
+              borderRadius: '5px',
+              marginBottom: '20px',
+              border: '1px solid rgba(255,0,0,0.3)'
+            }}>
+              {error}
+            </div>
+          )}
           
-          <StudentsTable 
-            students={students}
-            onView={handleViewStudent}
-            onEdit={handleEditStudent}
-            onDelete={handleDeleteStudent}
-          />
+          {successMessage && (
+            <div className="success-message" style={{
+              color: 'green',
+              background: 'rgba(0,255,0,0.1)',
+              padding: '10px',
+              borderRadius: '5px',
+              marginBottom: '20px',
+              border: '1px solid rgba(0,255,0,0.3)'
+            }}>
+              {successMessage}
+            </div>
+          )}
+          
+          {loading ? (
+            <div className="loading-message" style={{
+              textAlign: 'center',
+              padding: '40px',
+              color: '#666'
+            }}>
+              Carregando alunos...
+            </div>
+          ) : (
+            <>
+              <SearchFilters
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                studentName={studentName}
+                setStudentName={setStudentName}
+                onClear={handleClear}
+              />
+              
+              <StudentsTable 
+                students={students}
+                onView={handleViewStudent}
+                onEdit={handleEditStudent}
+                onDelete={handleDeleteStudent}
+              />
+            </>
+          )}
         </main>
       </div>
+      
+      {/* Modal de confirmação de exclusão */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setStudentToDelete(null);
+        }}
+        onConfirm={confirmDeleteStudent}
+        title="Excluir Aluno"
+        message={`Tem certeza que deseja excluir o aluno "${studentToDelete?.name || studentToDelete?.nomeAluno}"? Esta ação não pode ser desfeita.`}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        type="danger"
+      />
     </div>
   );
 };

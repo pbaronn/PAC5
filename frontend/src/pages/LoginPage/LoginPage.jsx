@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Lock } from 'lucide-react';
+import { authService } from '../../services/api';
 import './LoginPage.css';
 // import lebreImage from '../../assets/images/lebre.png';
 // import logoImage from '../../assets/images/brasao.png';
@@ -9,20 +10,33 @@ const LoginPage = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [messageText, setMessageText] = useState('');
   const [showMessage, setShowMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Dados do login:', { username, password });
-    if (username === 'admin' && password === '123') {
+    setIsLoading(true);
+    setShowMessage(false);
+    
+    try {
+      console.log('Dados do login:', { username, password });
+      
+      const response = await authService.login({ username, password });
+      
+      console.log('Login realizado com sucesso:', response);
       setMessageText('Login bem-sucedido!');
       setShowMessage(true);
+      
       // Chama a função para navegar para a tela de busca após 2 segundos
       setTimeout(() => {
         onLoginSuccess();
       }, 2000);
-    } else {
-      setMessageText('Usuário ou senha inválidos.');
+      
+    } catch (error) {
+      console.error('Erro no login:', error);
+      setMessageText(error.message || 'Usuário ou senha inválidos.');
       setShowMessage(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,7 +86,13 @@ const LoginPage = ({ onLoginSuccess }) => {
                 required
               />
             </div>
-            <button type="submit" className="login-button">Entrar</button>
+            <button 
+              type="submit" 
+              className="login-button" 
+              disabled={isLoading}
+            >
+              {isLoading ? 'Entrando...' : 'Entrar'}
+            </button>
           </form>
         </div>
       </div>

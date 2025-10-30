@@ -1,6 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const useFormData = (initialData = {}) => {
+  // Função para formatar data para o input HTML (YYYY-MM-DD)
+  const formatDateForInput = (date) => {
+    if (!date) return '';
+    
+    try {
+      const dateObj = new Date(date);
+      if (isNaN(dateObj.getTime())) return '';
+      
+      // Formato ISO string e pegar apenas a parte da data
+      return dateObj.toISOString().split('T')[0];
+    } catch (error) {
+      console.error('Erro ao formatar data:', error);
+      return '';
+    }
+  };
+
+  // Processamento dos dados iniciais
+  const processedInitialData = {
+    ...initialData,
+    // Formatar data de nascimento para input HTML
+    dataNascimento: formatDateForInput(initialData.dataNascimento)
+  };
+
   const [formData, setFormData] = useState({
     nomeAluno: '',
     dataNascimento: '',
@@ -32,8 +55,23 @@ export const useFormData = (initialData = {}) => {
     usaMedicamentoContinuo: '',
     detalhesMedicamento: '',
     tipoSanguineo: '',
-    ...initialData
+    ...processedInitialData
   });
+
+  // Atualizar formData quando initialData mudar
+  useEffect(() => {
+    if (initialData && Object.keys(initialData).length > 0) {
+      const newProcessedData = {
+        ...initialData,
+        dataNascimento: formatDateForInput(initialData.dataNascimento)
+      };
+      
+      setFormData(prevData => ({
+        ...prevData,
+        ...newProcessedData
+      }));
+    }
+  }, [initialData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

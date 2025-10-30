@@ -5,21 +5,23 @@ const {
   getStudentById,
   updateStudent,
   deleteStudent,
-  getCategories
+  getCategories,
+  removeCategoryFromAllStudents
 } = require('../controllers/studentController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Todas as rotas precisam de autenticação
-router.use(authMiddleware);
+// Rotas sem autenticação (temporário para desenvolvimento)
+router.post('/', createStudent);                          // Criar aluno
+router.get('/categories', getCategories);                 // Categorias (deve vir antes de /:id)
+router.delete('/categories/remove-all', removeCategoryFromAllStudents); // Remover categoria de todos
+router.get('/', getStudents);                             // Listar alunos
+router.get('/:id', getStudentById);                       // Buscar aluno por ID
+router.put('/:id', updateStudent);                        // Atualizar aluno 
+router.delete('/:id', deleteStudent);                     // Deletar aluno
 
-// Rotas CRUD para estudantes
-router.post('/', createStudent);           // Linha 15
-router.get('/', getStudents);              // Linha 16
-router.get('/categories', getCategories);  // Linha 17 ← PROVÁVEL PROBLEMA
-router.get('/:id', getStudentById);
-router.put('/:id', updateStudent);
-router.delete('/:id', deleteStudent);
+// Rotas que precisam de autenticação
+router.use(authMiddleware);
 
 module.exports = router;
