@@ -99,6 +99,32 @@
   border-radius: 2px;
 }
 
+/* Mensagem de erro */
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  color: #ef4444;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Formulário */
 .finalizar-form {
   display: flex;
@@ -108,7 +134,7 @@
 
 /* Seções do formulário */
 .form-section {
-  background: linear-gradient(135deg, var(--bg-light) 0%, rgba(0,0,0,0.3) 100%);
+  /* background: linear-gradient(135deg, var(--bg-light) 0%, rgba(0,0,0,0.3) 100%); */
   border: 1px solid var(--border-color);
   border-radius: 15px;
   padding: 30px;

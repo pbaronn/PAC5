@@ -5,6 +5,7 @@ const { connectDB } = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const gameRoutes = require('./routes/gameRoutes');
 
 dotenv.config();
 
@@ -70,6 +71,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/games', gameRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

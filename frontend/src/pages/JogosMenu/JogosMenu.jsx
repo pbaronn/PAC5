@@ -1,98 +1,64 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import GamesSidebar from '../../components/GamesSidebar/GamesSidebar';
+import { gameService } from '../../services/api';
 import './JogosMenu.css';
 
 const JogosMenu = ({ onLogout, onNavigate }) => {
   const [upcomingGames, setUpcomingGames] = useState([]);
-  const [finalizingGames, setFinalizingGames] = useState([]);
+  const [finishedGames, setFinishedGames] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Dados fake para próximos jogos
-  const mockUpcomingGames = [
-    { 
-      id: 1, 
-      homeTeam: 'JEC', 
-      awayTeam: 'São Paulo FC', 
-      date: '15/06/2025',
-      time: '15:00',
-      category: 'Sub-7',
-      location: 'Campo Principal'
-    },
-    { 
-      id: 2, 
-      homeTeam: 'JEC', 
-      awayTeam: 'Palmeiras', 
-      date: '29/07/2025',
-      time: '16:30',
-      category: 'Sub-8',
-      location: 'Campo 2'
-    },
-    { 
-      id: 3, 
-      homeTeam: 'JEC', 
-      awayTeam: 'Santos', 
-      date: '15/06/2025',
-      time: '14:00',
-      category: 'Sub-6',
-      location: 'Campo Principal'
-    },
-    { 
-      id: 4, 
-      homeTeam: 'JEC', 
-      awayTeam: 'Corinthians', 
-      date: '29/07/2025',
-      time: '17:00',
-      category: 'Sub-9',
-      location: 'Campo 1'
-    }
-  ];
-
-  // Dados mockados para jogos a finalizar
-  const mockFinalizingGames = [
-    { 
-      id: 5, 
-      homeTeam: 'JEC', 
-      awayTeam: 'Flamengo', 
-      date: '10/05/2025',
-      time: '15:30',
-      category: 'Sub-7',
-      location: 'Campo Principal',
-      status: 'Editar'
-    },
-    { 
-      id: 6, 
-      homeTeam: 'JEC', 
-      awayTeam: 'Grêmio', 
-      date: '25/05/2025',
-      time: '16:00',
-      category: 'Sub-8',
-      location: 'Campo 2',
-      status: 'Editar'
-    },
-    { 
-      id: 7, 
-      homeTeam: 'JEC', 
-      awayTeam: 'Internacional', 
-      date: '30/05/2025',
-      time: '14:30',
-      category: 'Sub-6',
-      location: 'Campo Principal',
-      status: 'Editar'
-    }
-  ];
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+  };
 
   const fetchGames = async () => {
     setLoading(true);
+    setError(null);
     try {
-      // Simula carregamento
-      setTimeout(() => {
-        setUpcomingGames(mockUpcomingGames);
-        setFinalizingGames(mockFinalizingGames);
-        setLoading(false);
-      }, 500);
+      // Buscar próximos jogos
+      const upcomingResponse = await gameService.getUpcomingGames();
+      if (upcomingResponse.success) {
+        const formattedUpcoming = upcomingResponse.data.map(game => ({
+          id: game._id,
+          homeTeam: game.time1,
+          awayTeam: game.time2,
+          date: formatDate(game.dataJogo),
+          time: game.horario,
+          category: game.categoria,
+          location: game.local
+        }));
+        setUpcomingGames(formattedUpcoming);
+      }
+
+      // Buscar jogos finalizados
+      const finishedResponse = await gameService.getFinishedGames();
+      if (finishedResponse.success) {
+        const formattedFinished = finishedResponse.data
+          .filter(game => game.status === 'finalizado') // Apenas jogos já finalizados
+          .map(game => ({
+            id: game._id,
+            homeTeam: game.time1,
+            awayTeam: game.time2,
+            date: formatDate(game.dataJogo),
+            time: game.horario,
+            category: game.categoria,
+            location: game.local,
+            golsTime1: game.resultado?.golsTime1 || 0,
+            golsTime2: game.resultado?.golsTime2 || 0,
+            status: 'Finalizado'
+          }));
+        setFinishedGames(formattedFinished);
+      }
     } catch (error) {
       console.error('Erro ao buscar jogos:', error);
+      setError('Erro ao carregar jogos. Tente novamente.');
+      setUpcomingGames([]);
+      setFinishedGames([]);
+    } finally {
       setLoading(false);
     }
   };
@@ -142,6 +108,20 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
               <div className="loading-spinner"></div>
               <p>Carregando jogos...</p>
             </div>
+          ) : error ? (
+            <div className="error-state">
+              <p className="error-message">{error}</p>
+              <button onClick={fetchGames} className="retry-btn">
+                Tentar Novamente
+              </button>
+            </div>
+          ) : upcomingGames.length === 0 ? (
+            <div className="empty-state">
+              <p>Nenhum jogo agendado encontrado.</p>
+              <button onClick={() => onNavigate && onNavigate('cadastrar-jogo')} className="add-game-btn">
+                Cadastrar Novo Jogo
+              </button>
+            </div>
           ) : (
             <div className="games-grid">
               {upcomingGames.map((game) => (
@@ -161,13 +141,13 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
                     <span className="game-category">{game.category}</span>
                   </div>
                   <div className="game-actions">
-                    <button className="action-btn view-btn" onClick={(e) => {
+                    <button className="action-btn-jogo view-btn" onClick={(e) => {
                       e.stopPropagation();
                       handleGameClick(game);
                     }}>
                       Visualizar
                     </button>
-                    <button className="action-btn finalize-btn" onClick={(e) => {
+                    <button className="action-btn-jogo finalize-btn" onClick={(e) => {
                       e.stopPropagation();
                       if (onNavigate) {
                         onNavigate('finalizar-jogo', { gameData: game });
@@ -181,19 +161,27 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
             </div>
           )}
 
-          <h2 className="section-title finalizing-title">Jogos finalizados</h2>
+          <h2 className="section-title finalizing-title">Jogos Finalizados</h2>
           
           {loading ? (
             <div className="loading-state">
               <div className="loading-spinner"></div>
               <p>Carregando jogos...</p>
             </div>
+          ) : error ? (
+            <div className="error-state">
+              <p className="error-message">{error}</p>
+            </div>
+          ) : finishedGames.length === 0 ? (
+            <div className="empty-state">
+              <p>Nenhum jogo finalizado encontrado.</p>
+            </div>
           ) : (
             <div className="games-grid">
-              {finalizingGames.map((game) => (
+              {finishedGames.map((game) => (
                 <div 
                   key={game.id} 
-                  className="game-card finalizing-card"
+                  className="game-card finished-card"
                   onClick={() => {
                     if (onNavigate) {
                       onNavigate('jogo-finalizado', { gameData: game });
@@ -205,12 +193,17 @@ const JogosMenu = ({ onLogout, onNavigate }) => {
                     <span className="vs">VS</span>
                     <span className="away-team">{game.awayTeam}</span>
                   </div>
+                  <div className="game-score">
+                    <span className="score">{game.golsTime1}</span>
+                    <span className="score-separator">-</span>
+                    <span className="score">{game.golsTime2}</span>
+                  </div>
                   <div className="game-date">{game.date}</div>
                   <div className="game-details">
                     <span className="game-time">{game.time}</span>
                     <span className="game-category">{game.category}</span>
                   </div>
-                  <div className="game-status">{game.status}</div>
+                  <div className="game-status finished-status">{game.status}</div>
                 </div>
               ))}
             </div>

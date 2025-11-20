@@ -166,6 +166,10 @@ const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
               <h2 className="category-name-display">{category.nome}</h2>
             </div>
 
+              <div className="info-item full-width">
+                <label>Total de Alunos:</label>
+                <span className="stat-value">{category.totalAlunos || 0}</span>
+              </div>
             <div className="info-grid">
               <div className="info-item">
                 <label>Nome:</label>
@@ -173,7 +177,7 @@ const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
               </div>
 
               {category.descricao && (
-                <div className="info-item full-width">
+                <div className="info-item">
                   <label>Descrição:</label>
                   <span>{category.descricao}</span>
                 </div>
@@ -197,10 +201,6 @@ const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
                 </span>
               </div>
 
-              <div className="info-item">
-                <label>Total de Alunos:</label>
-                <span className="stat-value">{category.totalAlunos || 0}</span>
-              </div>
             </div>
           </div>
 

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, User, Lock, Save, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import ConfiguracoesSidebar from '../../components/ConfiguracoesSidebar/ConfiguracoesSidebar';
+import { authService } from '../../services/api';
 import './Configuracoes.css';
 
 const Configuracoes = ({ onLogout, onNavigate }) => {
@@ -9,10 +10,13 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
-    currentUsername: 'admin', // Valor mockado
-    newUsername: ''
+    currentUsername: '',
+    newUsername: '',
+    name: '',
+    email: ''
   });
 
+  const [loading, setLoading] = useState(false);
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
@@ -25,6 +29,28 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
     password: true,
     username: true
   });
+
+  // Carregar dados do usuário ao montar o componente
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  const loadUserData = async () => {
+    try {
+      const response = await authService.getMe();
+      if (response.success && response.user) {
+        setFormData(prev => ({
+          ...prev,
+          currentUsername: response.user.username || '',
+          name: response.user.name || '',
+          email: response.user.email || ''
+        }));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar dados do usuário:', error);
+      setErrors({ general: 'Erro ao carregar dados do usuário' });
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -49,7 +75,7 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
     }));
   };
 
-  const validateForm = () => {
+  const validatePasswordForm = () => {
     const newErrors = {};
 
     // Validação da senha atual
@@ -71,6 +97,13 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
       newErrors.confirmPassword = 'As senhas não coincidem';
     }
 
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateUsernameForm = () => {
+    const newErrors = {};
+
     // Validação do novo nome de usuário
     if (!formData.newUsername.trim()) {
       newErrors.newUsername = 'Novo nome de usuário é obrigatório';
@@ -82,61 +115,83 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) {
+    if (!validatePasswordForm()) {
       return;
     }
 
-    // Simular alteração de senha
-    console.log('Alterando senha:', {
-      currentPassword: formData.currentPassword,
-      newPassword: formData.newPassword
-    });
+    setLoading(true);
+    setErrors({});
 
-    setSuccessMessage('Senha alterada com sucesso!');
-    setFormData(prev => ({
-      ...prev,
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: ''
-    }));
+    try {
+      const response = await authService.changePassword({
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword,
+        confirmPassword: formData.confirmPassword
+      });
 
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 3000);
+      if (response.success) {
+        setSuccessMessage('Senha alterada com sucesso!');
+        setFormData(prev => ({
+          ...prev,
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        }));
+
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Erro ao alterar senha:', error);
+      setErrors({ 
+        general: error.message || 'Erro ao alterar senha. Verifique se a senha atual está correta.' 
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUsernameChange = (e) => {
+  const handleUsernameChange = async (e) => {
     e.preventDefault();
     
-    if (!formData.newUsername.trim()) {
-      setErrors({ newUsername: 'Novo nome de usuário é obrigatório' });
+    if (!validateUsernameForm()) {
       return;
     }
 
-    if (formData.newUsername.length < 3) {
-      setErrors({ newUsername: 'O nome de usuário deve ter pelo menos 3 caracteres' });
-      return;
+    setLoading(true);
+    setErrors({});
+
+    try {
+      const response = await authService.updateProfile({
+        username: formData.newUsername,
+        name: formData.name,
+        email: formData.email
+      });
+
+      if (response.success) {
+        setSuccessMessage('Nome de usuário alterado com sucesso!');
+        setFormData(prev => ({
+          ...prev,
+          currentUsername: formData.newUsername,
+          newUsername: ''
+        }));
+
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Erro ao alterar nome de usuário:', error);
+      setErrors({ 
+        general: error.message || 'Erro ao alterar nome de usuário. Este nome de usuário pode já estar em uso.' 
+      });
+    } finally {
+      setLoading(false);
     }
-
-    // Simular alteração de nome de usuário
-    console.log('Alterando nome de usuário:', {
-      currentUsername: formData.currentUsername,
-      newUsername: formData.newUsername
-    });
-
-    setSuccessMessage('Nome de usuário alterado com sucesso!');
-    setFormData(prev => ({
-      ...prev,
-      currentUsername: formData.newUsername,
-      newUsername: ''
-    }));
-
-    setTimeout(() => {
-      setSuccessMessage('');
-    }, 3000);
   };
 
   const handleSidebarClick = (page) => {
@@ -175,6 +230,12 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
         
         <main className="main-panel">
           <h1 className="panel-title">Configurações</h1>
+
+          {errors.general && (
+            <div className="error-message general-error">
+              {errors.general}
+            </div>
+          )}
 
           {successMessage && (
             <div className="success-message">
@@ -280,7 +341,7 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
 
                 <button type="submit" className="save-button">
                   <Save size={20} />
-                  <span>Alterar Senha</span>
+                  <span>{loading ? 'Salvando...' : 'Alterar Senha'}</span>
                 </button>
                 </form>
               )}
@@ -335,7 +396,7 @@ const Configuracoes = ({ onLogout, onNavigate }) => {
 
                 <button type="submit" className="save-button">
                   <Save size={20} />
-                  <span>Alterar Nome de Usuário</span>
+                  <span>{loading ? 'Salvando...' : 'Alterar Nome de Usuário'}</span>
                 </button>
                 </form>
               )}

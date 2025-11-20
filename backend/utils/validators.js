@@ -63,6 +63,71 @@ const validarCPF = (cpf) => {
     const idade = calcularIdade(dataNascimento);
     return `Sub-${idade + 1}`;
   };
+
+  // Validações específicas para jogos
+  const validarHorario = (horario) => {
+    const horarioRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    return horarioRegex.test(horario);
+  };
+
+  const formatarCEP = (cep) => {
+    cep = cep.replace(/[^\d]/g, '');
+    return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
+  };
+
+  const validarUF = (uf) => {
+    const ufsValidas = [
+      'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 
+      'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 
+      'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+    ];
+    return ufsValidas.includes(uf.toUpperCase());
+  };
+
+  const validarDataJogo = (dataJogo) => {
+    const data = new Date(dataJogo);
+    const hoje = new Date();
+    
+    // Verifica se a data é válida
+    if (isNaN(data.getTime())) {
+      return { valido: false, erro: 'Data inválida' };
+    }
+
+    // Verifica se a data não é muito antiga (mais de 1 ano no passado)
+    const umAnoAtras = new Date();
+    umAnoAtras.setFullYear(umAnoAtras.getFullYear() - 1);
+    
+    if (data < umAnoAtras) {
+      return { valido: false, erro: 'Data do jogo não pode ser anterior a um ano' };
+    }
+
+    // Verifica se a data não é muito distante (mais de 2 anos no futuro)
+    const doisAnosFrente = new Date();
+    doisAnosFrente.setFullYear(doisAnosFrente.getFullYear() + 2);
+    
+    if (data > doisAnosFrente) {
+      return { valido: false, erro: 'Data do jogo não pode ser superior a dois anos' };
+    }
+
+    return { valido: true };
+  };
+
+  const validarTipoJogo = (tipo) => {
+    const tiposValidos = ['amistoso', 'campeonato', 'torneio', 'copa', 'festival', 'treino'];
+    return tiposValidos.includes(tipo.toLowerCase());
+  };
+
+  // Função para buscar endereço por CEP (pode ser implementada com API externa)
+  const buscarEnderecoPorCEP = async (cep) => {
+    try {
+      // Implementação futura com API dos Correios ou ViaCEP
+      // Por enquanto retorna null para deixar o usuário preencher manualmente
+      return null;
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+      return null;
+    }
+  };
   
   module.exports = {
     validarCPF,
@@ -70,5 +135,11 @@ const validarCPF = (cpf) => {
     validarTelefone,
     validarCEP,
     calcularIdade,
-    determinarCategoriaIdade
+    determinarCategoriaIdade,
+    validarHorario,
+    formatarCEP,
+    validarUF,
+    validarDataJogo,
+    validarTipoJogo,
+    buscarEnderecoPorCEP
   };

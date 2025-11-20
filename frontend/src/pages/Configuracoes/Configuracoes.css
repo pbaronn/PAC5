@@ -292,6 +292,17 @@
   margin-top: 5px;
 }
 
+.error-message.general-error {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--error-color);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Botão de salvar */
 .save-button {
   display: flex;

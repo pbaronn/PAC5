@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import GamesSidebar from '../../components/GamesSidebar/GamesSidebar';
+import { gameService } from '../../services/api';
 import './FinalizarJogo.css';
 
 const FinalizarJogo = ({ onLogout, onNavigate, gameData }) => {
   const [game, setGame] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     time1Name: '',
     time1Score: '',
@@ -16,31 +18,43 @@ const FinalizarJogo = ({ onLogout, onNavigate, gameData }) => {
     observacoes: ''
   });
 
-  // Dados mockados para o jogo
-  const mockGameData = {
-    id: 1,
-    homeTeam: 'JEC',
-    awayTeam: 'São Paulo FC',
-    date: '15/06/2025',
-    time: '15:00',
-    category: 'Sub-7'
-  };
-
   useEffect(() => {
-    // Simula carregamento dos dados
-    setTimeout(() => {
-      const currentGame = gameData || mockGameData;
-      setGame(currentGame);
-      
-      // Preenche os nomes dos times automaticamente
-      setFormData(prev => ({
-        ...prev,
-        time1Name: currentGame.homeTeam || '',
-        time2Name: currentGame.awayTeam || ''
-      }));
-      
-      setLoading(false);
-    }, 500);
+    const loadGameData = async () => {
+      if (!gameData?.id) {
+        setError('Nenhum jogo selecionado');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Buscar dados atualizados do jogo
+        const response = await gameService.getById(gameData.id);
+        
+        if (response.success) {
+          const currentGame = response.data;
+          setGame({ ...currentGame, id: currentGame._id });
+          
+          // Preenche os nomes dos times automaticamente
+          setFormData(prev => ({
+            ...prev,
+            time1Name: currentGame.time1 || '',
+            time2Name: currentGame.time2 || ''
+          }));
+        } else {
+          setError('Erro ao carregar dados do jogo');
+        }
+      } catch (error) {
+        console.error('Erro ao carregar jogo:', error);
+        setError('Erro ao carregar jogo. Tente novamente.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGameData();
   }, [gameData]);
 
   const handleInputChange = (field, value) => {
@@ -50,16 +64,55 @@ const FinalizarJogo = ({ onLogout, onNavigate, gameData }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Dados do jogo finalizado:', formData);
     
-    // Aqui você implementaria a lógica de salvamento
-    alert('Jogo finalizado com sucesso!');
-    
-    // Volta para o menu de jogos após salvar
-    if (onNavigate) {
-      onNavigate('jogos-menu');
+    // Validações
+    if (!formData.time1Score || !formData.time2Score) {
+      setError('Por favor, informe o placar dos dois times');
+      return;
+    }
+
+    if (formData.acrescimo === 'sim' && !formData.tempoAcrescimo) {
+      setError('Por favor, informe o tempo de acréscimo');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Preparar dados para finalização
+      const finalizarData = {
+        golsTime1: parseInt(formData.time1Score),
+        golsTime2: parseInt(formData.time2Score)
+      };
+
+      // Se tiver observações, adicionar
+      if (formData.observacoes) {
+        finalizarData.observacoes = formData.observacoes;
+      }
+
+      console.log('Finalizando jogo:', game.id, finalizarData);
+
+      // Finalizar jogo usando a rota específica
+      const response = await gameService.finalizarJogo(game.id, finalizarData);
+      
+      if (response.success) {
+        alert('Jogo finalizado com sucesso!');
+        
+        // Navegar para o menu de jogos
+        if (onNavigate) {
+          onNavigate('jogos-menu');
+        }
+      } else {
+        throw new Error(response.message || 'Erro ao finalizar jogo');
+      }
+    } catch (error) {
+      console.error('Erro ao finalizar jogo:', error);
+      setError(`Erro ao finalizar jogo: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -114,6 +167,12 @@ const FinalizarJogo = ({ onLogout, onNavigate, gameData }) => {
         
         <main className="main-panel">
           <h1 className="panel-title">Finalizar Jogo</h1>
+          
+          {error && (
+            <div className="error-message">
+              <span>{error}</span>
+            </div>
+          )}
           
           <form onSubmit={handleSubmit} className="finalizar-form">
             {/* Seção de Placar */}

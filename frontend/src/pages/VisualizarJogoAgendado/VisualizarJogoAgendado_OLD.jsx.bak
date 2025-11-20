@@ -50,14 +50,8 @@ const VisualizarJogoAgendado = ({ onLogout, onNavigate, gameData }) => {
       setError(null);
       
       const response = await gameService.getById(gameData.id);
-      console.log('Resposta do jogo:', response);
-      
       if (response.success) {
         const currentGame = response.data;
-        console.log('Dados do jogo:', currentGame);
-        console.log('Escalação recebida:', currentGame.escalacao);
-        
-        const categoria = currentGame.categoria || '';
         
         setFormData({
           time1: currentGame.time1 || '',
@@ -69,38 +63,17 @@ const VisualizarJogoAgendado = ({ onLogout, onNavigate, gameData }) => {
           cidade: currentGame.cidade || '',
           uf: currentGame.uf || '',
           tipo: currentGame.tipo || '',
-          categoria: categoria,
+          categoria: currentGame.categoria || '',
           juiz: currentGame.juiz || '',
           observacoes: currentGame.observacoes || ''
         });
 
         // Carregar escalação com posições
         const escalacao = currentGame.escalacao || [];
-        console.log('Escalação processada:', escalacao);
-        
-        const studentsWithPosition = escalacao.map(student => {
-          // Se o student é um objeto populado
-          if (student.aluno) {
-            return {
-              ...student.aluno,
-              _id: student.aluno._id,
-              posicao: student.posicao || ''
-            };
-          }
-          // Se já está no formato correto
-          return {
-            ...student,
-            posicao: student.posicao || ''
-          };
-        });
-        
-        console.log('Alunos na escalação:', studentsWithPosition);
-        setSelectedStudents(studentsWithPosition);
-        
-        // Carregar alunos disponíveis da categoria
-        if (categoria) {
-          loadStudentsByCategory(categoria);
-        }
+        setSelectedStudents(escalacao.map(student => ({
+          ...student,
+          posicao: student.posicao || ''
+        })));
       } else {
         setError('Erro ao carregar dados do jogo');
       }
@@ -133,14 +106,16 @@ const VisualizarJogoAgendado = ({ onLogout, onNavigate, gameData }) => {
     }
 
     try {
+      setLoading(true);
       const response = await gameService.getStudentsByCategory(categoria);
       if (response.success) {
-        console.log('Alunos disponíveis carregados:', response.data);
         setAvailableStudents(response.data);
       }
     } catch (error) {
       console.error('Erro ao carregar alunos:', error);
       setError('Erro ao carregar alunos da categoria');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -232,8 +207,8 @@ const VisualizarJogoAgendado = ({ onLogout, onNavigate, gameData }) => {
         juiz: formData.juiz,
         observacoes: formData.observacoes || '',
         escalacao: selectedStudents.map(student => ({
-          aluno: student._id,
-          posicao: student.posicao || ''
+          _id: student._id,
+          posicao: student.posicao
         }))
       };
 

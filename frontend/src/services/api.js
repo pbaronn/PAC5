@@ -201,10 +201,130 @@ export const authService = {
     return !!localStorage.getItem('token');
   },
 
-  // Obter usuário atual
+  // Obter usuário atual (do localStorage)
   getCurrentUser: () => {
     const user = localStorage.getItem('user');
     return user ? JSON.parse(user) : null;
+  },
+
+  // Obter dados atualizados do usuário do servidor
+  getMe: async () => {
+    return apiRequest('/auth/me');
+  },
+
+  // Atualizar perfil do usuário (nome, username, email)
+  updateProfile: async (profileData) => {
+    const response = await apiRequest('/auth/profile', {
+      method: 'PUT',
+      body: JSON.stringify(profileData),
+    });
+    
+    // Atualizar localStorage com os novos dados
+    if (response.user) {
+      localStorage.setItem('user', JSON.stringify(response.user));
+    }
+    
+    return response;
+  },
+
+  // Alterar senha
+  changePassword: async (passwordData) => {
+    return apiRequest('/auth/change-password', {
+      method: 'PUT',
+      body: JSON.stringify(passwordData),
+    });
+  },
+};
+
+// Serviços para jogos
+export const gameService = {
+  // Criar novo jogo
+  create: async (gameData) => {
+    return apiRequest('/games', {
+      method: 'POST',
+      body: JSON.stringify(gameData),
+    });
+  },
+
+  // Buscar todos os jogos
+  getAll: async (filters = {}) => {
+    const queryParams = new URLSearchParams();
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value);
+      }
+    });
+    
+    const queryString = queryParams.toString();
+    const url = queryString ? `/games?${queryString}` : '/games';
+    
+    return apiRequest(url);
+  },
+
+  // Buscar jogo por ID
+  getById: async (id) => {
+    return apiRequest(`/games/${id}`);
+  },
+
+  // Atualizar jogo
+  update: async (id, gameData) => {
+    return apiRequest(`/games/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(gameData),
+    });
+  },
+
+  // Deletar jogo
+  delete: async (id) => {
+    return apiRequest(`/games/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Buscar alunos por categoria para escalação
+  getStudentsByCategory: async (categoria) => {
+    return apiRequest(`/games/students/${encodeURIComponent(categoria)}`);
+  },
+
+  // Adicionar aluno à escalação
+  addStudentToEscalacao: async (gameId, studentId) => {
+    return apiRequest(`/games/${gameId}/escalacao/${studentId}`, {
+      method: 'POST',
+    });
+  },
+
+  // Remover aluno da escalação
+  removeStudentFromEscalacao: async (gameId, studentId) => {
+    return apiRequest(`/games/${gameId}/escalacao/${studentId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Finalizar jogo
+  finalizar: async (gameId, resultado) => {
+    return apiRequest(`/games/${gameId}/finalizar`, {
+      method: 'PUT',
+      body: JSON.stringify(resultado),
+    });
+  },
+
+  // Buscar próximos jogos (apenas agendados, não finalizados)
+  getUpcomingGames: async () => {
+    return apiRequest('/games?futuro=true&status=agendado&sortBy=dataJogo&sortOrder=asc');
+  },
+
+  // Buscar jogos finalizados (por status, não por data)
+  getFinishedGames: async () => {
+    return apiRequest('/games?status=finalizado&sortBy=dataJogo&sortOrder=desc');
+  },
+
+  // Finalizar jogo
+  finalizarJogo: async (id, resultadoData) => {
+    return apiRequest(`/games/${id}/finalizar`, {
+      method: 'PUT',
+      body: JSON.stringify(resultadoData),
+    });
   },
 };
 
@@ -212,4 +332,5 @@ export default {
   studentService,
   categoryService,
   authService,
+  gameService,
 };

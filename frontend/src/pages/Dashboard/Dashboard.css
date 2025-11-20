@@ -70,21 +70,48 @@
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 30px;
   margin-bottom: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .dashboard-card {
-  background: linear-gradient(135deg, var(--bg-light) 0%, rgba(0,0,0,0.3) 100%);
-  border: 1px solid var(--border-color);
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  backdrop-filter: blur(10px);
+  animation: cardFadeIn 0.6s ease-out backwards;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.dashboard-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dashboard-card:nth-child(3) {
+  animation-delay: 0.3s;
 }
 
 .dashboard-card::before {
@@ -93,147 +120,211 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 5px;
   background: linear-gradient(90deg, var(--primary-color), rgba(0,0,0,0.3), var(--primary-color));
-  border-radius: 15px 15px 0 0;
+  border-radius: 20px 20px 0 0;
+  transition: all 0.4s ease;
+}
+
+.dashboard-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.05), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
 .dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dashboard-card:hover::after {
+  opacity: 1;
+}
+
+.dashboard-card:hover::before {
+  height: 6px;
 }
 
 .treino-card::before {
-  background: linear-gradient(90deg, var(--info-color), rgba(23, 162, 184, 0.3), var(--info-color));
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
 }
 
 .jogo-card::before {
-  background: linear-gradient(90deg, var(--warning-color), rgba(255, 193, 7, 0.3), var(--warning-color));
+  background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
 }
 
 .aniversario-card::before {
-  background: linear-gradient(90deg, var(--success-color), rgba(40, 167, 69, 0.3), var(--success-color));
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  gap: 15px;
+  margin-bottom: 25px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+  position: relative;
 }
 
 .card-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  background: rgba(42, 42, 42, 0.5);
+  width: 55px;
+  height: 55px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 15px;
+  color: #fff;
+  font-size: 1.5rem;
   transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.treino-card .card-icon {
-  background: rgba(23, 162, 184, 0.2);
-  color: var(--info-color);
-}
-
-.jogo-card .card-icon {
-  background: rgba(255, 193, 7, 0.2);
-  color: var(--warning-color);
-}
-
-.aniversario-card .card-icon {
-  background: rgba(40, 167, 69, 0.2);
-  color: var(--success-color);
+.dashboard-card:hover .card-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
 .card-header h3 {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-color);
+  color: #fff;
   margin: 0;
   flex: 1;
-  margin-left: 15px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
 }
 
 .card-arrow {
-  color: rgba(224, 224, 224, 0.5);
+  color: rgba(255, 255, 255, 0.4);
   transition: all 0.3s ease;
+  margin-left: auto;
 }
 
 .dashboard-card:hover .card-arrow {
-  color: var(--text-color);
-  transform: translateX(5px);
+  color: #fff;
+  transform: translateX(8px);
 }
 
 .card-content {
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .card-info {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: rgba(224, 224, 224, 0.8);
-  font-size: 0.95rem;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  padding: 8px 0;
+  transition: all 0.3s ease;
+}
+
+.info-item:hover {
+  color: #fff;
+  transform: translateX(5px);
 }
 
 .info-item svg {
-  color: var(--primary-color);
+  color: rgba(255, 255, 255, 0.6);
   flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.info-item:hover svg {
+  color: #fff;
 }
 
 .aniversariantes-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .aniversariante-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 15px;
-  background: rgba(42, 42, 42, 0.3);
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(5px);
 }
 
 .aniversariante-item:hover {
-  background: rgba(42, 42, 42, 0.5);
-  transform: translateX(5px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .aniversariante-info {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .aniversariante-info .nome {
-  font-weight: 600;
-  color: var(--text-color);
-  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
 }
 
 .aniversariante-info .idade {
-  font-size: 0.85rem;
-  color: rgba(224, 224, 224, 0.6);
+  font-size: 0.9rem;
+  color: rgba(79, 172, 254, 0.9);
+  font-weight: 600;
+  background: rgba(79, 172, 254, 0.15);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  width: fit-content;
 }
 
 .aniversariante-item .data {
-  font-size: 0.9rem;
-  color: var(--success-color);
-  font-weight: 500;
+  font-size: 0.95rem;
+  color: rgba(79, 172, 254, 1);
+  font-weight: 600;
+  padding: 6px 12px;
+  background: rgba(79, 172, 254, 0.15);
+  border-radius: 8px;
 }
 
+/* No data message */
+.no-data {
+  text-align: center;
+  padding: 40px 20px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.no-data p {
+  margin: 0;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+}
 
 /* Estado de loading */
 .loading-state {
@@ -275,10 +366,28 @@
   }
   
   .dashboard-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: 20px;
   }
   
+  .dashboard-card {
+    padding: 20px;
+  }
+  
+  .card-icon {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .card-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .aniversariante-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }
 
 @media (max-width: 768px) {

@@ -3,6 +3,7 @@ import Header from '../../components/Header/Header';
 import GamesSidebar from '../../components/GamesSidebar/GamesSidebar';
 import SearchFilters from '../../components/SearchFilters/SearchFilters';
 import GamesTable from '../../components/GamesTable/GamesTable';
+import { gameService } from '../../services/api';
 import './BuscaJogos.css';
 
 const BuscaJogos = ({ onLogout, onNavigate }) => {
@@ -11,76 +12,49 @@ const BuscaJogos = ({ onLogout, onNavigate }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [opponentName, setOpponentName] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Dados mockados para jogos
-  const mockGames = [
-    { 
-      id: 1, 
-      nome: 'JEC vs São Paulo FC', 
-      data: '15/06/2025',
-      placar: '2-1',
-      adversario: 'São Paulo FC',
-      categoria: 'Sub-7',
-      local: 'Campo Principal'
-    },
-    { 
-      id: 2, 
-      nome: 'JEC vs Palmeiras', 
-      data: '29/07/2025',
-      placar: '1-3',
-      adversario: 'Palmeiras',
-      categoria: 'Sub-8',
-      local: 'Campo 2'
-    },
-    { 
-      id: 3, 
-      nome: 'JEC vs Santos', 
-      data: '15/06/2025',
-      placar: '0-0',
-      adversario: 'Santos',
-      categoria: 'Sub-6',
-      local: 'Campo Principal'
-    },
-    { 
-      id: 4, 
-      nome: 'JEC vs Corinthians', 
-      data: '29/07/2025',
-      placar: '3-2',
-      adversario: 'Corinthians',
-      categoria: 'Sub-9',
-      local: 'Campo 1'
-    },
-    { 
-      id: 5, 
-      nome: 'JEC vs Flamengo', 
-      data: '10/08/2025',
-      placar: '1-1',
-      adversario: 'Flamengo',
-      categoria: 'Sub-7',
-      local: 'Campo Principal'
-    },
-    { 
-      id: 6, 
-      nome: 'JEC vs Grêmio', 
-      data: '25/08/2025',
-      placar: '2-0',
-      adversario: 'Grêmio',
-      categoria: 'Sub-8',
-      local: 'Campo 2'
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR');
+  };
+
+  const formatGameResult = (game) => {
+    if (game.resultado && game.resultado.golsTime1 !== null && game.resultado.golsTime2 !== null) {
+      return `${game.resultado.golsTime1}-${game.resultado.golsTime2}`;
     }
-  ];
+    return game.status === 'finalizado' ? 'Finalizado' : 'Agendado';
+  };
 
   const fetchGames = async () => {
     setLoading(true);
+    setError(null);
     try {
-      // Simula carregamento
-      setTimeout(() => {
-        setAllGames(mockGames);
-        setGames(mockGames);
-        setLoading(false);
-      }, 500);
+      const response = await gameService.getAll();
+      if (response.success) {
+        const formattedGames = response.data.map(game => ({
+          id: game._id,
+          nome: `${game.time1} vs ${game.time2}`,
+          data: formatDate(game.dataJogo),
+          placar: formatGameResult(game),
+          adversario: game.time2,
+          categoria: game.categoria,
+          local: game.local,
+          status: game.status,
+          originalData: game
+        }));
+        
+        setAllGames(formattedGames);
+        setGames(formattedGames);
+      } else {
+        throw new Error(response.message || 'Erro ao buscar jogos');
+      }
     } catch (error) {
       console.error('Erro ao buscar jogos:', error);
+      setError('Erro ao carregar jogos. Tente novamente.');
+      setAllGames([]);
+      setGames([]);
+    } finally {
       setLoading(false);
     }
   };
@@ -125,16 +99,28 @@ const BuscaJogos = ({ onLogout, onNavigate }) => {
   };
 
   const handleEditGame = (game) => {
-    // Aqui você pode implementar a navegação para edição do jogo
-    console.log('Editar jogo:', game);
+    if (onNavigate) {
+      onNavigate('visualizar-jogo-agendado', { gameData: { id: game.id } });
+    }
   };
 
-  const handleDeleteGame = (gameId) => {
-    // Aqui você pode implementar a exclusão do jogo
-    console.log('Excluir jogo:', gameId);
-    const updatedGames = allGames.filter(game => game.id !== gameId);
-    setAllGames(updatedGames);
-    setGames(updatedGames);
+  const handleDeleteGame = async (gameId) => {
+    if (!window.confirm('Tem certeza que deseja excluir este jogo? Esta ação não pode ser desfeita.')) {
+      return;
+    }
+
+    try {
+      const response = await gameService.delete(gameId);
+      if (response.success) {
+        alert('Jogo excluído com sucesso!');
+        await fetchGames(); // Recarregar a lista
+      } else {
+        throw new Error(response.message || 'Erro ao excluir jogo');
+      }
+    } catch (error) {
+      console.error('Erro ao excluir jogo:', error);
+      alert(`Erro ao excluir jogo: ${error.message}`);
+    }
   };
 
   return (
@@ -163,13 +149,22 @@ const BuscaJogos = ({ onLogout, onNavigate }) => {
             onClear={handleClear}
           />
           
-          <GamesTable 
-            games={games}
-            onView={handleViewGame}
-            onEdit={handleEditGame}
-            onDelete={handleDeleteGame}
-            loading={loading}
-          />
+          {error ? (
+            <div className="error-state">
+              <p className="error-message">{error}</p>
+              <button onClick={fetchGames} className="retry-btn">
+                Tentar Novamente
+              </button>
+            </div>
+          ) : (
+            <GamesTable 
+              games={games}
+              onView={handleViewGame}
+              onEdit={handleEditGame}
+              onDelete={handleDeleteGame}
+              loading={loading}
+            />
+          )}
         </main>
       </div>
     </div>
