@@ -143,6 +143,21 @@ export const categoryService = {
     const url = `/categories/${id}/students${queryParams.toString() ? `?${queryParams}` : ''}`;
     return apiRequest(url);
   },
+
+  // Vincular alunos à categoria
+  addStudentsToCategory: async (id, studentIds) => {
+    return apiRequest(`/categories/${id}/students`, {
+      method: 'POST',
+      body: JSON.stringify({ studentIds }),
+    });
+  },
+
+  // Desvincular aluno da categoria
+  removeStudentFromCategory: async (id, studentId) => {
+    return apiRequest(`/categories/${id}/students/${studentId}`, {
+      method: 'DELETE',
+    });
+  },
 };
 
 // Serviços para autenticação

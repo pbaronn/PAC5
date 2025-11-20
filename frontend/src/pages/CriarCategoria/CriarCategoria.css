@@ -77,6 +77,33 @@
   animation: titleSlideIn 0.8s ease-out;
 }
 
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-color);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
 @keyframes titleSlideIn {
   from {
     opacity: 0;
@@ -162,11 +189,40 @@
   color: rgba(224, 224, 224, 0.5);
 }
 
+/* Color input group */
+.color-input-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.color-input {
+  width: 80px;
+  height: 45px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--input-bg);
+  transition: all 0.3s ease;
+}
+
+.color-input:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+.color-preview {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
 /* Busca de alunos centralizada */
 .search-container-centered {
   position: relative;
-  width: 100%;
-  max-width: 400px;
+  /* width: 100%; */
   margin: 0 auto 35px auto;
   display: flex;
   justify-content: center;
@@ -370,6 +426,25 @@
   background: linear-gradient(135deg, #1e7e34, #155724);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.save-btn:disabled,
+.cancel-btn:disabled,
+.add-student-btn:disabled,
+.remove-student-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
 }
 
 .no-results {

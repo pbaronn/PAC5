@@ -9,13 +9,14 @@ const LoginPage = ({ onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [messageText, setMessageText] = useState('');
-  const [showMessage, setShowMessage] = useState(false);
+  const [messageType, setMessageType] = useState(''); // 'success' ou 'error'
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setShowMessage(false);
+    setMessageText('');
+    setMessageType('');
     
     try {
       console.log('Dados do login:', { username, password });
@@ -24,17 +25,17 @@ const LoginPage = ({ onLoginSuccess }) => {
       
       console.log('Login realizado com sucesso:', response);
       setMessageText('Login bem-sucedido!');
-      setShowMessage(true);
+      setMessageType('success');
       
-      // Chama a função para navegar para a tela de busca após 2 segundos
+      // Chama a função para navegar para a tela de busca após 1.5 segundos
       setTimeout(() => {
         onLoginSuccess();
-      }, 2000);
+      }, 1500);
       
     } catch (error) {
       console.error('Erro no login:', error);
       setMessageText(error.message || 'Usuário ou senha inválidos.');
-      setShowMessage(true);
+      setMessageType('error');
     } finally {
       setIsLoading(false);
     }
@@ -93,14 +94,14 @@ const LoginPage = ({ onLoginSuccess }) => {
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
             </button>
+            {messageText && (
+              <div className={`message-text ${messageType}`}>
+                {messageText}
+              </div>
+            )}
           </form>
         </div>
       </div>
-      {showMessage && (
-        <div className="message-box" onAnimationEnd={() => setShowMessage(false)}>
-          {messageText}
-        </div>
-      )}
     </div>
   );
 };

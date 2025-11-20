@@ -159,6 +159,11 @@ const studentSchema = new mongoose.Schema({
     enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', ''],
     trim: true
   },
+  categories: [{
+    type: String,
+    trim: true
+  }],
+  // Mantido para compatibilidade com código legado
   category: {
     type: String,
     required: false,

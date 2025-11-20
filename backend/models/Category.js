@@ -23,6 +23,11 @@ const categorySchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  // Array de IDs de alunos vinculados a esta categoria
+  students: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Student'
+  }],
   // Estatísticas
   totalAlunos: {
     type: Number,
@@ -35,8 +40,20 @@ const categorySchema = new mongoose.Schema({
 // Middleware para atualizar contador de alunos
 categorySchema.methods.updateStudentCount = async function() {
   const Student = mongoose.model('Student');
-  const count = await Student.countDocuments({ category: this.nome });
+  // Contar alunos que têm esta categoria no array categories OU no campo legado category
+  const count = await Student.countDocuments({ 
+    $or: [
+      { categories: this.nome },
+      { category: this.nome }
+    ]
+  });
   this.totalAlunos = count;
+  this.students = await Student.find({
+    $or: [
+      { categories: this.nome },
+      { category: this.nome }
+    ]
+  }).distinct('_id');
   await this.save();
 };
 

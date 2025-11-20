@@ -209,6 +209,16 @@
     background-color: #fbbf24;
   }
   
+  /* Estilos para múltiplas categorias */
+  .categories-cell {
+    display: inline-block;
+    max-width: 100%;
+    white-space: normal;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+  }
+  
   /* Estado vazio */
   .empty-state {
     display: flex;

@@ -28,12 +28,10 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
       setLoading(true);
       const response = await studentService.getAll();
       
-      // Filtrar apenas alunos sem categoria
-      const studentsWithoutCategory = response.students.filter(student => 
-        !student.category || student.category === '' || student.category === 'Sem categoria'
-      );
+      // Agora mostra TODOS os alunos, não apenas os sem categoria
+      // Pois cada aluno pode ter múltiplas categorias
+      setAvailableStudents(response.students || []);
       
-      setAvailableStudents(studentsWithoutCategory);
     } catch (error) {
       console.error('Erro ao carregar alunos:', error);
       setError('Erro ao carregar alunos disponíveis');
@@ -80,16 +78,11 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
       // Criar a categoria
       const response = await categoryService.create(formData);
       
-      // Se há alunos selecionados, atualizar eles para a nova categoria
+      // Se há alunos selecionados, vincular eles à nova categoria
       if (selectedStudents.length > 0) {
-        const updatePromises = selectedStudents.map(student => 
-          studentService.update(student._id || student.id, {
-            ...student,
-            category: formData.nome
-          })
-        );
+        const studentIds = selectedStudents.map(student => student._id || student.id);
         
-        await Promise.all(updatePromises);
+        await categoryService.addStudentsToCategory(response.category._id, studentIds);
       }
 
       showSuccessMessage(`Categoria "${formData.nome}" criada com sucesso!`);
@@ -285,7 +278,7 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
                 
                 {filteredStudents.length === 0 && (
                   <div className="no-results">
-                    <p>{searchTerm ? 'Nenhum aluno encontrado com este nome.' : 'Todos os alunos já possuem categoria.'}</p>
+                    <p>{searchTerm ? 'Nenhum aluno encontrado com este nome.' : 'Nenhum aluno cadastrado no sistema.'}</p>
                   </div>
                 )}
               </div>

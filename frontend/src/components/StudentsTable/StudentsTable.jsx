@@ -22,6 +22,18 @@ const StudentsTable = ({ students = [], onView, onEdit, onDelete }) => {
     }
   };
 
+  const formatCategories = (student) => {
+    // Priorizar o array categories se existir e não estiver vazio
+    if (student.categories && Array.isArray(student.categories) && student.categories.length > 0) {
+      return student.categories.join(', ');
+    }
+    // Fallback para category (campo legado)
+    if (student.category) {
+      return student.category;
+    }
+    return 'Sem categoria';
+  };
+
   if (!students.length) {
     return (
       <div className="table-container">
@@ -39,7 +51,7 @@ const StudentsTable = ({ students = [], onView, onEdit, onDelete }) => {
           <tr>
             <th>ID</th>
             <th>Aluno</th>
-            <th>Categoria</th>
+            <th>Categorias</th>
             <th>Status</th>
             <th>Ações</th>
           </tr>
@@ -49,7 +61,9 @@ const StudentsTable = ({ students = [], onView, onEdit, onDelete }) => {
             <tr key={student.id}>
               <td onClick={() => handleRowClick(student)}>{student.id}</td>
               <td onClick={() => handleRowClick(student)}>{student.name}</td>
-              <td onClick={() => handleRowClick(student)}>{student.category}</td>
+              <td onClick={() => handleRowClick(student)}>
+                <span className="categories-cell">{formatCategories(student)}</span>
+              </td>
               <td onClick={() => handleRowClick(student)}>
                 <span className={`table-status ${student.status?.toLowerCase()}`}>
                   {student.status}

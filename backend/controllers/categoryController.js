@@ -247,7 +247,12 @@ const getCategoryStudents = async (req, res) => {
       });
     }
 
-    const students = await Student.find({ category: category.nome })
+    const students = await Student.find({ 
+      $or: [
+        { categories: category.nome },
+        { category: category.nome }
+      ]
+    })
       .limit(parseInt(limit))
       .skip(parseInt(offset))
       .sort({ nomeAluno: 1 });
@@ -266,6 +271,114 @@ const getCategoryStudents = async (req, res) => {
   }
 };
 
+// Vincular alunos a uma categoria
+const addStudentsToCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { studentIds } = req.body; // Array de IDs de alunos
+
+    if (!Array.isArray(studentIds) || studentIds.length === 0) {
+      return res.status(400).json({
+        message: 'studentIds deve ser um array não vazio'
+      });
+    }
+
+    const category = await Category.findById(id);
+    
+    if (!category) {
+      return res.status(404).json({
+        message: 'Categoria não encontrada'
+      });
+    }
+
+    // Atualizar cada aluno para adicionar a categoria
+    const updatePromises = studentIds.map(async (studentId) => {
+      const student = await Student.findById(studentId);
+      if (student) {
+        // Adicionar ao novo array categories
+        if (!student.categories) {
+          student.categories = [];
+        }
+        if (!student.categories.includes(category.nome)) {
+          student.categories.push(category.nome);
+        }
+        // Manter category para compatibilidade (usar a primeira categoria)
+        if (!student.category) {
+          student.category = category.nome;
+        }
+        await student.save();
+      }
+    });
+
+    await Promise.all(updatePromises);
+
+    // Atualizar contagem
+    await category.updateStudentCount();
+
+    res.json({
+      message: 'Alunos vinculados com sucesso',
+      category
+    });
+  } catch (error) {
+    console.error('Erro ao vincular alunos:', error);
+    res.status(500).json({
+      message: 'Erro interno do servidor',
+      error: error.message
+    });
+  }
+};
+
+// Desvincular aluno de uma categoria
+const removeStudentFromCategory = async (req, res) => {
+  try {
+    const { id, studentId } = req.params;
+
+    const category = await Category.findById(id);
+    
+    if (!category) {
+      return res.status(404).json({
+        message: 'Categoria não encontrada'
+      });
+    }
+
+    const student = await Student.findById(studentId);
+    
+    if (!student) {
+      return res.status(404).json({
+        message: 'Aluno não encontrado'
+      });
+    }
+
+    // Remover do array categories
+    if (student.categories) {
+      student.categories = student.categories.filter(cat => cat !== category.nome);
+    }
+
+    // Se era a categoria principal, limpar ou usar a próxima
+    if (student.category === category.nome) {
+      student.category = student.categories && student.categories.length > 0 
+        ? student.categories[0] 
+        : null;
+    }
+
+    await student.save();
+
+    // Atualizar contagem
+    await category.updateStudentCount();
+
+    res.json({
+      message: 'Aluno desvinculado com sucesso',
+      category
+    });
+  } catch (error) {
+    console.error('Erro ao desvincular aluno:', error);
+    res.status(500).json({
+      message: 'Erro interno do servidor',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   createCategory,
   getCategories,
@@ -273,5 +386,7 @@ module.exports = {
   updateCategory,
   deleteCategory,
   toggleCategoryStatus,
-  getCategoryStudents
+  getCategoryStudents,
+  addStudentsToCategory,
+  removeStudentFromCategory
 };

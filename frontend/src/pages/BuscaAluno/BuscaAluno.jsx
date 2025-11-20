@@ -42,6 +42,7 @@ const BuscaAluno = ({ onLogout, onNavigate, onDeleteStudent }) => {
         id: student._id,
         name: student.nomeAluno,
         category: student.category,
+        categories: student.categories, // Adicionar array de categorias
         status: student.status,
         // Manter todos os dados originais também (incluindo a data original)
         ...student,

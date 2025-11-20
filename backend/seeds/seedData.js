@@ -16,7 +16,7 @@ const seedData = async () => {
     // Criar usuário admin
     await User.create({
       username: 'admin',
-      password: '123',
+      password: 'admin123',
       name: 'Administrador',
       email: 'admin@sistema.com'
     });
@@ -127,7 +127,7 @@ const seedData = async () => {
     console.log('\n🎉 Seed executado com sucesso!');
     console.log('📱 Dados para login:');
     console.log('   Usuário: admin');
-    console.log('   Senha: 123');
+    console.log('   Senha: admin123');
     
     process.exit(0);
   } catch (error) {

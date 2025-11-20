@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LoginPage from './pages/LoginPage/LoginPage';
 import BuscaAluno from './pages/BuscaAluno/BuscaAluno';
 import CadastraAluno from './pages/CadastraAluno/CadastraAluno';
@@ -13,21 +13,46 @@ import JogoFinalizado from './pages/JogoFinalizado/JogoFinalizado';
 import MenuCategorias from './pages/MenuCategorias/MenuCategorias';
 import CriarCategoria from './pages/CriarCategoria/CriarCategoria';
 import VisualizarCategoria from './pages/VisualizarCategoria/VisualizarCategoria';
+import EditarCategoria from './pages/EditarCategoria/EditarCategoria';
 import Treinos from './pages/Treinos/Treinos';
 import AdicionarTreino from './pages/AdicionarTreino/AdicionarTreino';
 import VisualizarTreino from './pages/VisualizarTreino/VisualizarTreino';
 import Configuracoes from './pages/Configuracoes/Configuracoes';
 import Dashboard from './pages/Dashboard/Dashboard';
+import { authService } from './services/api';
 import './App.css';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentPage, setCurrentPage] = useState('dashboard'); // 'dashboard', 'gerenciar', 'cadastra', 'edita', 'visualizar', 'jogos-menu', 'buscar-jogos', 'cadastrar-jogo', 'visualizar-jogo', 'finalizar-jogo', 'jogo-finalizado', 'menu-categorias', 'criar-categoria', 'visualizar-categoria', 'treinos', 'adicionar-treino', 'visualizar-treino', 'configuracoes'
+  // Verificar se há sessão salva no localStorage
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    return authService.isAuthenticated();
+  });
+  const [currentPage, setCurrentPage] = useState('dashboard'); // 'dashboard', 'gerenciar', 'cadastra', 'edita', 'visualizar', 'jogos-menu', 'buscar-jogos', 'cadastrar-jogo', 'visualizar-jogo', 'finalizar-jogo', 'jogo-finalizado', 'menu-categorias', 'criar-categoria', 'visualizar-categoria', 'editar-categoria', 'treinos', 'adicionar-treino', 'visualizar-treino', 'configuracoes'
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [selectedGame, setSelectedGame] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedTreino, setSelectedTreino] = useState(null);
   const [editMode, setEditMode] = useState(false);
+
+  // Verificar autenticação ao carregar o app
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (authService.isAuthenticated()) {
+        try {
+          // Validar token com o backend
+          await authService.validateToken();
+          setIsLoggedIn(true);
+        } catch (error) {
+          console.error('Token inválido:', error);
+          // Se o token for inválido, fazer logout
+          authService.logout();
+          setIsLoggedIn(false);
+        }
+      }
+    };
+
+    checkAuth();
+  }, []);
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
@@ -36,6 +61,7 @@ const App = () => {
 
   const handleLogout = () => {
     console.log('Fazendo logout...');
+    authService.logout(); // Limpa token e user do localStorage
     setIsLoggedIn(false);
     setCurrentPage('dashboard');
     setSelectedStudent(null);
@@ -168,6 +194,14 @@ const App = () => {
       case 'visualizar-categoria':
         return (
           <VisualizarCategoria 
+            onLogout={handleLogout}
+            onNavigate={handleNavigation}
+            categoryData={selectedCategory}
+          />
+        );
+      case 'editar-categoria':
+        return (
+          <EditarCategoria 
             onLogout={handleLogout}
             onNavigate={handleNavigation}
             categoryData={selectedCategory}

@@ -191,11 +191,10 @@ const MenuCategorias = ({ onLogout, onNavigate }) => {
                       style={{ backgroundColor: category.cor || '#3B82F6' }}
                     ></div>
                     <h3 className="categoria-nome">{category.nome}</h3>
+                    {category.descricao && (
+                      <p className="categoria-descricao">{category.descricao}</p>
+                    )}
                   </div>
-                  
-                  {category.descricao && (
-                    <p className="categoria-descricao">{category.descricao}</p>
-                  )}
                   
                   <div className="categoria-stats">
                     <div className="stat-item">
