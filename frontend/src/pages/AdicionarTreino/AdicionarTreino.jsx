@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, MapPin, User, Save, ArrowLeft } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import TreinosSidebar from '../../components/TreinosSidebar/TreinosSidebar';
+import { treinoService, categoryService } from '../../services/api';
 import './AdicionarTreino.css';
 
 const AdicionarTreino = ({ onLogout, onNavigate }) => {
@@ -13,6 +14,32 @@ const AdicionarTreino = ({ onLogout, onNavigate }) => {
     local: '',
     tecnico: ''
   });
+  const [categorias, setCategorias] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    loadCategorias();
+  }, []);
+
+  const loadCategorias = async () => {
+    try {
+      setLoading(true);
+      const response = await categoryService.getAll({ ativo: true });
+      console.log('Categorias carregadas:', response);
+      if (response.success && response.data) {
+        setCategorias(response.data);
+        console.log('Total de categorias:', response.data.length);
+      } else {
+        setCategorias([]);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar categorias:', error);
+      setError('Erro ao carregar categorias: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const diasSemanaOptions = [
     'Segunda-feira',
@@ -54,31 +81,41 @@ const AdicionarTreino = ({ onLogout, onNavigate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Dados do Treino:', formData);
+    setLoading(true);
+    setError('');
     
-    // Simular salvamento
-    const message = document.createElement('div');
-    message.innerText = 'Treino cadastrado com sucesso!';
-    message.style.cssText = `
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #000000;
-      color: white;
-      padding: 20px 40px;
-      border-radius: 10px;
-      z-index: 1000;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    `;
-    document.body.appendChild(message);
-    setTimeout(() => {
-      document.body.removeChild(message);
-      // Redirecionar para a página de treinos
-      if (onNavigate) {
-        onNavigate('treinos');
-      }
-    }, 2000);
+    treinoService.create(formData)
+      .then(response => {
+        // Mostrar mensagem de sucesso
+        const message = document.createElement('div');
+        message.innerText = 'Treino cadastrado com sucesso!';
+        message.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #000000;
+          color: white;
+          padding: 20px 40px;
+          border-radius: 10px;
+          z-index: 1000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        document.body.appendChild(message);
+        setTimeout(() => {
+          document.body.removeChild(message);
+          if (onNavigate) {
+            onNavigate('treinos');
+          }
+        }, 2000);
+      })
+      .catch(error => {
+        console.error('Erro ao cadastrar treino:', error);
+        setError(error.message || 'Erro ao cadastrar treino');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleSidebarClick = (page) => {
@@ -112,6 +149,19 @@ const AdicionarTreino = ({ onLogout, onNavigate }) => {
         <main className="main-panel">
           <h1 className="panel-title">Adicionar Treino</h1>
           
+          {error && (
+            <div style={{
+              padding: '10px 15px',
+              marginBottom: '20px',
+              backgroundColor: '#fee',
+              border: '1px solid #fcc',
+              borderRadius: '5px',
+              color: '#c33'
+            }}>
+              {error}
+            </div>
+          )}
+          
           <form className="treino-form" onSubmit={handleSubmit}>
             <div className="form-grid">
               {/* Categoria */}
@@ -128,9 +178,9 @@ const AdicionarTreino = ({ onLogout, onNavigate }) => {
                   required
                 >
                   <option value="">Selecione uma categoria</option>
-                  {categoriaOptions.map(categoria => (
-                    <option key={categoria} value={categoria}>
-                      {categoria}
+                  {categorias.map(categoria => (
+                    <option key={categoria._id} value={categoria.nome}>
+                      {categoria.nome}
                     </option>
                   ))}
                 </select>
@@ -226,12 +276,12 @@ const AdicionarTreino = ({ onLogout, onNavigate }) => {
             </div>
 
             <div className="form-actions">
-              <button type="button" className="cancel-button" onClick={handleBack}>
+              <button type="button" className="cancel-button" onClick={handleBack} disabled={loading}>
                 Cancelar
               </button>
-              <button type="submit" className="save-button">
+              <button type="submit" className="save-button" disabled={loading}>
                 <Save size={20} />
-                <span>Salvar Treino</span>
+                <span>{loading ? 'Salvando...' : 'Salvar Treino'}</span>
               </button>
             </div>
           </form>

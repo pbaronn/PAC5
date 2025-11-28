@@ -27,7 +27,7 @@ const MenuCategorias = ({ onLogout, onNavigate }) => {
       });
       
       console.log('Categorias carregadas:', response);
-      setCategories(response.categories || []);
+      setCategories(response.data || []);
       
     } catch (error) {
       console.error('Erro ao carregar categorias:', error);

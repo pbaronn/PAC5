@@ -117,9 +117,9 @@ const VisualizarJogoAgendado = ({ onLogout, onNavigate, gameData }) => {
     try {
       const response = await categoryService.getAll({ 
         ativo: true, 
-        includeStudentCount: true 
+        includeStudentCount: false 
       });
-      setCategorias(response.categories || []);
+      setCategorias(response.data || []);
     } catch (error) {
       console.error('Erro ao carregar categorias:', error);
     }

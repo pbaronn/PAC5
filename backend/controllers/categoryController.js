@@ -67,7 +67,10 @@ const getCategories = async (req, res) => {
       categories = await Category.find(query).sort({ nome: 1 });
     }
 
-    res.json({ categories });
+    res.json({ 
+      success: true,
+      data: categories 
+    });
   } catch (error) {
     console.error('Erro ao buscar categorias:', error);
     res.status(500).json({
@@ -93,7 +96,10 @@ const getCategoryById = async (req, res) => {
     // Atualizar contagem de alunos
     await category.updateStudentCount();
 
-    res.json(category);
+    res.json({ 
+      success: true,
+      data: category 
+    });
   } catch (error) {
     console.error('Erro ao buscar categoria:', error);
     res.status(500).json({
@@ -147,8 +153,9 @@ const updateCategory = async (req, res) => {
     await updatedCategory.updateStudentCount();
 
     res.json({
+      success: true,
       message: 'Categoria atualizada com sucesso',
-      category: updatedCategory
+      data: updatedCategory
     });
   } catch (error) {
     console.error('Erro ao atualizar categoria:', error);
@@ -193,6 +200,7 @@ const deleteCategory = async (req, res) => {
     await Category.findByIdAndDelete(id);
     
     res.json({
+      success: true,
       message: 'Categoria excluída com sucesso'
     });
   } catch (error) {
@@ -221,8 +229,9 @@ const toggleCategoryStatus = async (req, res) => {
     await category.save();
 
     res.json({
+      success: true,
       message: `Categoria ${category.ativo ? 'ativada' : 'desativada'} com sucesso`,
-      category
+      data: category
     });
   } catch (error) {
     console.error('Erro ao alterar status da categoria:', error);
@@ -258,8 +267,9 @@ const getCategoryStudents = async (req, res) => {
       .sort({ nomeAluno: 1 });
 
     res.json({
+      success: true,
+      data: students,
       category: category.nome,
-      students,
       total: students.length
     });
   } catch (error) {
@@ -316,8 +326,9 @@ const addStudentsToCategory = async (req, res) => {
     await category.updateStudentCount();
 
     res.json({
+      success: true,
       message: 'Alunos vinculados com sucesso',
-      category
+      data: category
     });
   } catch (error) {
     console.error('Erro ao vincular alunos:', error);
@@ -367,8 +378,9 @@ const removeStudentFromCategory = async (req, res) => {
     await category.updateStudentCount();
 
     res.json({
+      success: true,
       message: 'Aluno desvinculado com sucesso',
-      category
+      data: category
     });
   } catch (error) {
     console.error('Erro ao desvincular aluno:', error);

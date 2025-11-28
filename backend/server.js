@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const gameRoutes = require('./routes/gameRoutes');
+const treinoRoutes = require('./routes/treinoRoutes');
 
 dotenv.config();
 
@@ -72,6 +73,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/games', gameRoutes);
+app.use('/api/treinos', treinoRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

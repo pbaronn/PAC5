@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Users, MapPin, User, Edit, Save, XCircle, Trash2 } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import TreinosSidebar from '../../components/TreinosSidebar/TreinosSidebar';
+import { treinoService } from '../../services/api';
 import './VisualizarTreino.css';
 
 const VisualizarTreino = ({ onLogout, onNavigate, treinoData }) => {
   const [treino, setTreino] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     categoria: '',
     diasSemana: [],
@@ -17,38 +19,38 @@ const VisualizarTreino = ({ onLogout, onNavigate, treinoData }) => {
     tecnico: ''
   });
 
-  // Dados mockados para o treino
-  const mockTreinoData = {
-    id: 1,
-    categoria: 'Sub-12',
-    diasSemana: ['Segunda', 'Quarta', 'Sexta'],
-    horarioInicio: '14:00',
-    horarioFim: '15:30',
-    local: 'Campo Principal',
-    tecnico: 'João Silva'
-  };
-
   // Opções para dias da semana
   const diasSemanaOptions = [
-    'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'
+    'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'
   ];
 
   useEffect(() => {
-    // Simula carregamento dos dados
-    setTimeout(() => {
-      const currentTreino = treinoData || mockTreinoData;
-      setTreino(currentTreino);
-      setFormData({
-        categoria: currentTreino.categoria || '',
-        diasSemana: currentTreino.diasSemana || [],
-        horarioInicio: currentTreino.horarioInicio || '',
-        horarioFim: currentTreino.horarioFim || '',
-        local: currentTreino.local || '',
-        tecnico: currentTreino.tecnico || ''
-      });
-      setLoading(false);
-    }, 500);
+    loadTreino();
   }, [treinoData]);
+
+  const loadTreino = async () => {
+    try {
+      setLoading(true);
+      if (treinoData && treinoData._id) {
+        const response = await treinoService.getById(treinoData._id);
+        const currentTreino = response.data;
+        setTreino(currentTreino);
+        setFormData({
+          categoria: currentTreino.categoria || '',
+          diasSemana: currentTreino.diasSemana || [],
+          horarioInicio: currentTreino.horarioInicio || '',
+          horarioFim: currentTreino.horarioFim || '',
+          local: currentTreino.local || '',
+          tecnico: currentTreino.tecnico || ''
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao carregar treino:', error);
+      setError('Erro ao carregar treino');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSidebarClick = (page) => {
     if (onNavigate) {
@@ -93,32 +95,54 @@ const VisualizarTreino = ({ onLogout, onNavigate, treinoData }) => {
     setEditMode(!editMode);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.categoria.trim()) {
-      alert('Por favor, insira a categoria do treino.');
+      setError('Por favor, insira a categoria do treino.');
       return;
     }
 
     if (formData.diasSemana.length === 0) {
-      alert('Por favor, selecione pelo menos um dia da semana.');
+      setError('Por favor, selecione pelo menos um dia da semana.');
       return;
     }
 
     if (!formData.horarioInicio || !formData.horarioFim) {
-      alert('Por favor, preencha os horários de início e fim.');
+      setError('Por favor, preencha os horários de início e fim.');
       return;
     }
 
-    const updatedTreino = {
-      ...treino,
-      ...formData
-    };
-
-    console.log('Treino atualizado:', updatedTreino);
-    alert('Treino atualizado com sucesso!');
-    
-    setTreino(updatedTreino);
-    setEditMode(false);
+    try {
+      setLoading(true);
+      const response = await treinoService.update(treino._id, formData);
+      setTreino(response.data);
+      setEditMode(false);
+      setError('');
+      
+      // Mostrar mensagem de sucesso
+      const message = document.createElement('div');
+      message.innerText = 'Treino atualizado com sucesso!';
+      message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #000000;
+        color: white;
+        padding: 20px 40px;
+        border-radius: 10px;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      `;
+      document.body.appendChild(message);
+      setTimeout(() => {
+        document.body.removeChild(message);
+      }, 2000);
+    } catch (error) {
+      console.error('Erro ao atualizar treino:', error);
+      setError(error.message || 'Erro ao atualizar treino');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -134,13 +158,38 @@ const VisualizarTreino = ({ onLogout, onNavigate, treinoData }) => {
     setEditMode(false);
   };
 
-  const handleDeleteTreino = () => {
+  const handleDeleteTreino = async () => {
     if (window.confirm(`Tem certeza que deseja excluir o treino da categoria "${treino?.categoria}"? Esta ação não pode ser desfeita.`)) {
-      console.log('Excluindo treino:', treino);
-      alert('Treino excluído com sucesso!');
-      // Volta para a lista de treinos após excluir
-      if (onNavigate) {
-        onNavigate('treinos');
+      try {
+        setLoading(true);
+        await treinoService.delete(treino._id);
+        
+        // Mostrar mensagem de sucesso
+        const message = document.createElement('div');
+        message.innerText = 'Treino excluído com sucesso!';
+        message.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #000000;
+          color: white;
+          padding: 20px 40px;
+          border-radius: 10px;
+          z-index: 1000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        document.body.appendChild(message);
+        setTimeout(() => {
+          document.body.removeChild(message);
+          if (onNavigate) {
+            onNavigate('treinos');
+          }
+        }, 2000);
+      } catch (error) {
+        console.error('Erro ao excluir treino:', error);
+        setError(error.message || 'Erro ao excluir treino');
+        setLoading(false);
       }
     }
   };
@@ -187,12 +236,26 @@ const VisualizarTreino = ({ onLogout, onNavigate, treinoData }) => {
           <div className="view-header">
             <h1 className="panel-title">Visualizar Treino</h1>
             
+            {error && (
+              <div style={{
+                padding: '10px 15px',
+                marginBottom: '20px',
+                backgroundColor: '#fee',
+                border: '1px solid #fcc',
+                borderRadius: '5px',
+                color: '#c33'
+              }}>
+                {error}
+              </div>
+            )}
+            
             <div className="view-actions">
               {!editMode ? (
                 <div className="view-mode-actions">
                   <button 
                     className="edit-btn"
                     onClick={handleEditToggle}
+                    disabled={loading}
                   >
                     <Edit size={18} />
                     Editar
@@ -200,6 +263,7 @@ const VisualizarTreino = ({ onLogout, onNavigate, treinoData }) => {
                   <button 
                     className="delete-btn"
                     onClick={handleDeleteTreino}
+                    disabled={loading}
                   >
                     <Trash2 size={18} />
                     Excluir Treino
@@ -210,13 +274,15 @@ const VisualizarTreino = ({ onLogout, onNavigate, treinoData }) => {
                   <button 
                     className="save-btn"
                     onClick={handleSave}
+                    disabled={loading}
                   >
                     <Save size={18} />
-                    Salvar
+                    {loading ? 'Salvando...' : 'Salvar'}
                   </button>
                   <button 
                     className="cancel-edit-btn"
                     onClick={handleCancelEdit}
+                    disabled={loading}
                   >
                     <XCircle size={18} />
                     Cancelar

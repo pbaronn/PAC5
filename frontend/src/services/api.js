@@ -328,9 +328,86 @@ export const gameService = {
   },
 };
 
+// Serviços para treinos
+export const treinoService = {
+  // Criar novo treino
+  create: async (treinoData) => {
+    return apiRequest('/treinos', {
+      method: 'POST',
+      body: JSON.stringify(treinoData),
+    });
+  },
+
+  // Buscar todos os treinos
+  getAll: async (filters = {}) => {
+    const queryParams = new URLSearchParams();
+    
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== '') {
+        queryParams.append(key, value);
+      }
+    });
+    
+    const queryString = queryParams.toString();
+    const url = queryString ? `/treinos?${queryString}` : '/treinos';
+    
+    return apiRequest(url);
+  },
+
+  // Buscar treino por ID
+  getById: async (id) => {
+    return apiRequest(`/treinos/${id}`);
+  },
+
+  // Atualizar treino
+  update: async (id, treinoData) => {
+    return apiRequest(`/treinos/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(treinoData),
+    });
+  },
+
+  // Deletar treino
+  delete: async (id) => {
+    return apiRequest(`/treinos/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
+  // Ativar/Desativar treino
+  toggleStatus: async (id) => {
+    return apiRequest(`/treinos/${id}/toggle`, {
+      method: 'PATCH',
+    });
+  },
+
+  // Buscar treinos por categoria
+  getByCategoria: async (categoria) => {
+    return apiRequest(`/treinos/categoria/${encodeURIComponent(categoria)}`);
+  },
+
+  // Buscar alunos do treino (da categoria)
+  getAlunos: async (id) => {
+    return apiRequest(`/treinos/${id}/alunos`);
+  },
+
+  // Obter estatísticas
+  getStatistics: async (filters = {}) => {
+    const queryParams = new URLSearchParams();
+    
+    if (filters.categoria) queryParams.append('categoria', filters.categoria);
+    
+    const queryString = queryParams.toString();
+    const url = queryString ? `/treinos/statistics?${queryString}` : '/treinos/statistics';
+    
+    return apiRequest(url);
+  },
+};
+
 export default {
   studentService,
   categoryService,
   authService,
   gameService,
+  treinoService,
 };

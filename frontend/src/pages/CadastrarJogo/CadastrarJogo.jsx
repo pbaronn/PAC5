@@ -32,9 +32,9 @@ const CadastrarJogo = ({ onLogout, onNavigate }) => {
     try {
       const response = await categoryService.getAll({ 
         ativo: true, 
-        includeStudentCount: true 
+        includeStudentCount: false 
       });
-      setCategorias(response.categories || []);
+      setCategorias(response.data || []);
     } catch (error) {
       console.error('Erro ao carregar categorias:', error);
       setError('Erro ao carregar categorias: ' + error.message);

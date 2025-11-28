@@ -2,64 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Calendar, Clock, Users, Search, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import TreinosSidebar from '../../components/TreinosSidebar/TreinosSidebar';
+import { treinoService } from '../../services/api';
 import './Treinos.css';
 
 const Treinos = ({ onLogout, onNavigate }) => {
   const [treinos, setTreinos] = useState([]);
   const [allTreinos, setAllTreinos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [showAllTreinos, setShowAllTreinos] = useState(false);
   const [visibleTreinos, setVisibleTreinos] = useState(4);
 
-  // Dados mockados para treinos
-  const mockTreinos = [
-    {
-      id: 1,
-      categoria: 'Sub-12',
-      diasSemana: ['Segunda', 'Quarta', 'Sexta'],
-      horarioInicio: '14:00',
-      horarioFim: '15:30',
-      local: 'Campo Principal',
-      tecnico: 'João Silva'
-    },
-    {
-      id: 2,
-      categoria: 'Sub-14',
-      diasSemana: ['Terça', 'Quinta'],
-      horarioInicio: '16:00',
-      horarioFim: '17:30',
-      local: 'Campo 2',
-      tecnico: 'Maria Santos'
-    },
-    {
-      id: 3,
-      categoria: 'Sub-16',
-      diasSemana: ['Segunda', 'Quarta', 'Sexta'],
-      horarioInicio: '18:00',
-      horarioFim: '19:30',
-      local: 'Campo Principal',
-      tecnico: 'Pedro Costa'
-    },
-    {
-      id: 4,
-      categoria: 'Sub-18',
-      diasSemana: ['Terça', 'Quinta', 'Sábado'],
-      horarioInicio: '19:00',
-      horarioFim: '20:30',
-      local: 'Campo 2',
-      tecnico: 'Ana Oliveira'
-    }
-  ];
-
   useEffect(() => {
-    // Simula carregamento dos dados
-    setTimeout(() => {
-      setTreinos(mockTreinos);
-      setAllTreinos(mockTreinos);
-      setLoading(false);
-    }, 500);
+    loadTreinos();
   }, []);
+
+  const loadTreinos = async () => {
+    try {
+      setLoading(true);
+      const response = await treinoService.getAll({ ativo: true });
+      const treinosData = response.data || [];
+      setTreinos(treinosData);
+      setAllTreinos(treinosData);
+    } catch (error) {
+      console.error('Erro ao carregar treinos:', error);
+      setError('Erro ao carregar treinos');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Filtra treinos baseado no termo de busca
@@ -118,7 +90,27 @@ const Treinos = ({ onLogout, onNavigate }) => {
     return `${inicio} - ${fim}`;
   };
 
-  
+  if (loading) {
+    return (
+      <div className="student-search-container">
+        <Header 
+          activeNav="Treinos" 
+          onLogout={onLogout} 
+          onNavigate={onNavigate}
+        />
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '400px',
+          fontSize: '18px',
+          color: '#666'
+        }}>
+          Carregando treinos...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="student-search-container">
@@ -136,6 +128,19 @@ const Treinos = ({ onLogout, onNavigate }) => {
         
         <main className="main-panel">
           <h1 className="panel-title">Treinos</h1>
+          
+          {error && (
+            <div style={{
+              padding: '10px 15px',
+              marginBottom: '20px',
+              backgroundColor: '#fee',
+              border: '1px solid #fcc',
+              borderRadius: '5px',
+              color: '#c33'
+            }}>
+              {error}
+            </div>
+          )}
           
           {/* Header com busca centralizada */}
           <div className="treinos-header">
@@ -160,7 +165,7 @@ const Treinos = ({ onLogout, onNavigate }) => {
             <div className="treinos-grid">
               {treinos.slice(0, visibleTreinos).map((treino) => (
                 <div 
-                  key={treino.id} 
+                  key={treino._id} 
                   className="treino-card"
                   onClick={() => handleTreinoClick(treino)}
                 >
