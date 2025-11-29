@@ -94,3 +94,65 @@ Tanto o módulo de Backend quanto o módulo de Frontend precisarão ter suas dep
 Após a instalação das dependências, os módulos devem ser iniciados em terminais separados para que a comunicação entre Frontend e Backend seja estabelecida.
 - No terminal do diretório Backend, execute: npm start
 - No terminal do diretório Frontend, execute: npm run dev
+
+---
+
+## 6. Telas Principais do Projeto
+
+### Tela de Login e Acesso
+Exibe a interface de autenticação do sistema, onde o usuário insere suas credenciais.
+
+![Tela de login](imagens_readme/Imagem1.png)
+
+
+### Menu Inicial
+É a tela principal após o login, projetada para acesso rápido às informações.
+
+![Tela de Menu Inicial](imagens_readme/Imagem2.png)
+
+
+### Gerenciamento de Alunos
+Tela central para a administração dos cadastros de atletas. Permite a busca rápida de alunos e exibe uma tabela com informações como nome, categoria, status e ícones de ação para cada perfil.
+
+![Tela de Gerenciamento de Alunos](imagens_readme/Imagem3.png)
+
+
+### Cadastro de Alunos
+Formulário para inclusão de novos atletas. A interface está organizada em seções claras: Dados do Aluno, Dados do Responsável e Anamnese
+
+![Tela de Cadastro de Alunos](imagens_readme/Imagem4.png)
+
+
+### Menu de Categorias
+Permite a gestão das categorias do projeto. Lista as categorias existentes e possui um botão destacado para adicionar uma "Nova Categoria".
+
+![Tela de Menu de Categorias](imagens_readme/Imagem5.png)
+
+
+### Próximos Jogos
+Tela dedicada ao controle de partidas. Exibe os Próximos Jogos agendados, permitindo a visualização e edição dos detalhes, além de listar os Jogos Finalizados abaixo.
+
+![Tela de Menu de Categorias](imagens_readme/Imagem6.png)
+
+
+### Treinos Agendados
+Apresenta a organização visual dos horários de treino por categoria. Mostra cards detalhando os treinos com Dias da Semana, Horário, Local e o nome do Técnico responsável.
+
+![Tela de Treinos Agendados](imagens_readme/Imagem7.png)
+
+
+### Configurações
+Tela para que o usuário do sistema possa gerenciar suas credenciais de acesso. Oferece as opções de Alterar Senha e Alterar Nome de Usuário.
+
+![Tela de Treinos Agendados](imagens_readme/Imagem8.png)
+
+
+
+
+
+
+
+
+
+
+
