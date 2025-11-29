@@ -81,9 +81,9 @@ Principais funcionalidades:
 ---
 
 ## 5. Configuração do Ambiente e Inicialização
-Para preparar o ambiente de desenvolvimento e executar a aplicação, a equipe definiu a utilização de arquivos .env para o gerenciamento de variáveis sensíveis, além da execução dos módulos Front-end e Back-end separadamente.
+Para preparar o ambiente de desenvolvimento e executar a aplicação, definimos a utilização de arquivos .env para o gerenciamento de variáveis sensíveis, além da execução dos módulos Frontend e Backend separadamente.
 
-Abaixo está o procedimento necessário para baixar as dependências e iniciar o projeto em um ambiente de desenvolvimento, conforme a arquitetura que utiliza Node.js (Back-end) e React (Front-end):
+Abaixo está o procedimento necessário para baixar as dependências e iniciar o projeto em um ambiente de desenvolvimento.
 
 ### 5.1 Instalação de Dependências
 Tanto o módulo de Backend quanto o módulo de Frontend precisarão ter suas dependências baixadas individualmente.
