@@ -19,39 +19,32 @@ A justificativa para o desenvolvimento do projeto reside na necessidade de resol
 ## 1.2 Descrição da aplicação
 
 A aplicação possui uma navegação que é facilitada por um menu superior fixo que dá acesso rápido às seções principais: Menu Inicial, Alunos, Categorias, Jogos, Treinos e Configurações.
+
+
 Fluxo de Uso e Telas Principais:
 - A entrada no sistema é controlada por uma Tela de Login com autenticação por senha, restrita a colaboradores e administradores.
 - Após o login, o usuário é direcionado para uma tela inicial que serve como sistema de acesso rápido. Nela, são exibidos lembretes e informações resumidas, como o "Próximo Jogo" agendado (com data, hora e adversário) e os "Próximos Aniversários".
 - A seção Gerenciamento de Alunos permite o controle completo dos cadastros, incluindo a visualização, edição, exclusão e busca dos alunos. A busca é otimizada com filtros por categoria, nome ou posição em campo.
 - Na seção Cadastro de Alunos e Anamnese a tela de cadastro é segmentada para a inserção de Dados do Aluno, Dados do Responsável e o módulo de Anamnese, garantindo que informações vitais de segurança estejam sempre acessíveis.
 - Nos itens de Gestão de Jogos e Treinos existem seções dedicadas para o Cadastro de Jogos incluindo escalação e registro de resultados, e para o Gerenciamento de Treinos. As telas de Treinos Agendados exibem a organização por categorias, com detalhes sobre dias da semana, horários, local e técnico responsável.
+- A seção de configurações permite personalização do usuário, permitindo que o colaborador ou administrador altere suas informações de acesso. As funcionalidades desta tela incluem alterar senha e alterar o  nome de usuário
 
 ---
 
 ## 2. Descrição do Público Beneficiado pelas Ações de Extensão
 O público beneficiado é composto por:  
-- **Gestores e treinadores:** maior controle administrativo e acesso rápido a informações.  
-- **Alunos (crianças e adolescentes):** ambiente esportivo mais seguro e organizado.  
+- **Colaboradores e administradores:** maior controle administrativo e acesso rápido a informações.  
+- **Atletas:** ambiente esportivo mais seguro e organizado.  
 
-O sistema será implementado em um projeto de formação de atletas em Joinville, atendendo demandas reais da comunidade esportiva.  
 
 ---
 
-## 3. Objetivos
-
-### 3.1 Objetivo Geral
+## 3. Objetivo
 Desenvolver e implementar uma **aplicação web** promovendo:  
 - Eficiência administrativa.  
 - Segurança na tomada de decisões.  
 - Acesso rápido a informações médicas e cadastrais.  
-- Melhor comunicação entre treinadores, gestores e responsáveis.  
 
-### 3.2 Objetivos Específicos
-- Estruturar um sistema eficiente para gestão de informações.  
-- Desenvolver módulo de gerenciamento de jogos (escalação e resultados).  
-- Implementar sistema para organização de jogos, treinos e campeonatos.  
-- Desenvolver gerenciamento de categorias (faixa etária).  
-- Garantir interface web intuitiva e eficiente.  
 
 ---
 
