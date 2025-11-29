@@ -4,6 +4,8 @@
 ## PAC - Projeto de Aprendizagem Colaborativa Extensionista do Curso de Engenharia de Software da Católica de Santa Catarina;
 
 **Autores:** Dereck Conink e Pâmela Baron
+
+
 **Professores orientadores**: Luiz Carlos Camargo e Claudinei Dias
 
 ---
