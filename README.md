@@ -18,11 +18,13 @@ A justificativa para o desenvolvimento do projeto reside na necessidade de resol
 
 ## 1.2 Descrição da aplicação
 
-O sistema desenvolvido é uma aplicação web com o objetivo geral de gerenciar alunos de escolas e projetos de formação esportivas, proporcionando maior eficiência administrativa, segurança na tomada de decisões e acesso rápido a informações médicas e cadastrais. O sistema visa centralizar e organizar dados dos alunos, gerenciamento de jogos e treinos. As funcionalidades essenciais estabelecidas incluem:
-- Controle de Alunos e Dados: Gerenciamento de cadastro, edição, visualização e remoção de alunos, incluindo o cadastro de dados médicos e anamnese.
-- Gestão de Turmas e Atividades: Cadastro de turmas, agendamentos de jogos (com escalação e registro de resultados) e horários de treinos.
-- Segurança e Acesso: O sistema requer uma tela de login com autenticação por senha, sendo restrito apenas a colaboradores e administradores.
-
+A aplicação possui uma navegação que é facilitada por um menu superior fixo que dá acesso rápido às seções principais: Menu Inicial, Alunos, Categorias, Jogos, Treinos e Configurações.
+Fluxo de Uso e Telas Principais:
+- A entrada no sistema é controlada por uma Tela de Login com autenticação por senha, restrita a colaboradores e administradores.
+- Após o login, o usuário é direcionado para uma tela inicial que serve como sistema de acesso rápido. Nela, são exibidos lembretes e informações resumidas, como o "Próximo Jogo" agendado (com data, hora e adversário) e os "Próximos Aniversários".
+- A seção Gerenciamento de Alunos permite o controle completo dos cadastros, incluindo a visualização, edição, exclusão e busca dos alunos. A busca é otimizada com filtros por categoria, nome ou posição em campo.
+- Na seção Cadastro de Alunos e Anamnese a tela de cadastro é segmentada para a inserção de Dados do Aluno, Dados do Responsável e o módulo de Anamnese, garantindo que informações vitais de segurança estejam sempre acessíveis.
+- Nos itens de Gestão de Jogos e Treinos existem seções dedicadas para o Cadastro de Jogos incluindo escalação e registro de resultados, e para o Gerenciamento de Treinos. As telas de Treinos Agendados exibem a organização por categorias, com detalhes sobre dias da semana, horários, local e técnico responsável.
 
 ---
 
