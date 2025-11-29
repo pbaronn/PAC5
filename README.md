@@ -1,31 +1,26 @@
 
-# PAC – Sistema de Gestão para o Projeto de Formação de Atletas Tricolor Mirins
+# Aplicação Web para Gestão de Atletas Tricolor Mirins
 
-## Sumário
-1. [Introdução](#1-introdução)  
-2. [Descrição do Público Beneficiado](#2-descrição-do-público-beneficiado-pelas-ações-de-extensão)  
-3. [Objetivos](#3-objetivos)  
-   - [Objetivo Geral](#31-objetivo-geral)  
-   - [Objetivos Específicos](#32-objetivos-específicos)  
-4. [Descrição das Principais Atividades Realizadas](#4-descrição-das-principais-atividades-realizadas)  
+##PAC - Projeto de Aprendizagem Colaborativa Extensionista do Curso de Engenharia de Software da Católica de Santa Catarina;
+
+**Autores:** Dereck Conink e Pâmela Baron
+**Professores orientadores**: Luiz Carlos Camargo e Claudinei Dias
+
 ---
 
-## 1. Introdução
-Muito se discute a importância da organização e gestão eficiente em ambientes esportivos, especialmente em escolas de futebol que atendem predominantemente crianças e adolescentes.  
+## 1.Introdução
+A justificativa para o desenvolvimento do projeto reside na necessidade de resolver problemas críticos gerados pela ausência de um sistema informatizado em ambientes esportivos, como falhas de comunicação, perda de dados e dificuldades no controle dos atletas. Em particular, a falta de acesso rápido a informações médicas em emergências comprometia a segurança e o atendimento imediato aos alunos. A solução proposta teve como objetivo desenvolver uma aplicação web para a gestão completa dos alunos , visando centralizar informações essenciais , reduzir a carga operacional e minimizar erros administrativos para os gestores. A entidade diretamente beneficiada pelas ações de extensão foi o Projeto Tricolor Mirins, localizado em Joinville.
 
-A ausência de um sistema informatizado pode resultar em dificuldades na comunicação, perda de dados e falhas no controle de jogadores disponíveis para partidas e treinamentos. Além disso, em emergências, a falta de acesso rápido a informações médicas pode comprometer a segurança dos alunos.  
 
-Diante desse cenário, este projeto surge com o objetivo de desenvolver uma **aplicação** voltada para a gestão de alunos de um projeto de formação de atletas.  
+---
 
-A problemática central pode ser resumida na questão:  
-**Como um sistema informatizado pode contribuir para a organização, segurança e eficiência no gerenciamento de alunos em uma escola de futebol?**  
+## 1.2 Descrição da aplicação
 
-O sistema proposto:  
-- Centraliza informações de alunos.  
-- Melhora a comunicação entre gestores, treinadores e responsáveis.  
-- Garante acesso imediato a registros médicos em emergências.    
+O sistema desenvolvido é uma aplicação web com o objetivo geral de gerenciar alunos de escolas e projetos de formação esportivas, proporcionando maior eficiência administrativa, segurança na tomada de decisões e acesso rápido a informações médicas e cadastrais. O sistema visa centralizar e organizar dados dos alunos, gerenciamento de jogos e treinos. As funcionalidades essenciais estabelecidas incluem:
+- Controle de Alunos e Dados: Gerenciamento de cadastro, edição, visualização e remoção de alunos, incluindo o cadastro de dados médicos e anamnese.
+- Gestão de Turmas e Atividades: Cadastro de turmas, agendamentos de jogos (com escalação e registro de resultados) e horários de treinos.
+- Segurança e Acesso: O sistema requer uma tela de login com autenticação por senha, sendo restrito apenas a colaboradores e administradores.
 
-O projeto também está alinhado aos princípios da extensão universitária, impactando a comunidade esportiva com uma solução tecnológica útil.  
 
 ---
 
@@ -86,15 +81,19 @@ Principais funcionalidades:
 - **Prototipagem:** Figma.
 - **Banco de Dados:** MongoDB Atlas.
 
-### 4.4 Organização de Responsabilidades
-- Desenvolvimento Frontend.  
-- Desenvolvimento Backend.  
-- Documentação e organização.  
-- Suporte ao desenvolvimento.  
-
-### 4.5 Escopo no Figma
-Protótipo criado com foco em:  
-- Navegação simples.  
-- Clareza das informações.  
-- Telas principais: menu, login, gerenciamento de alunos, perfil individual, categorias, configurações, jogos e treinos.
 ---
+
+## 5. Configuração do Ambiente e Inicialização
+Para preparar o ambiente de desenvolvimento e executar a aplicação, a equipe definiu a utilização de arquivos .env para o gerenciamento de variáveis sensíveis, além da execução dos módulos Front-end e Back-end separadamente.
+
+Abaixo está o procedimento necessário para baixar as dependências e iniciar o projeto em um ambiente de desenvolvimento, conforme a arquitetura que utiliza Node.js (Back-end) e React (Front-end):
+
+### 5.1 Instalação de Dependências
+Tanto o módulo de Backend quanto o módulo de Frontend precisarão ter suas dependências baixadas individualmente.
+ - No diretório do Backend abra o terminal e execute: npm install
+ - No diretório do Frontend abra o terminal e execute: npm install
+
+### 5.2 Inicialização dos Módulos
+Após a instalação das dependências, os módulos devem ser iniciados em terminais separados para que a comunicação entre Frontend e Backend seja estabelecida.
+- No terminal do diretório Backend, execute: npm start
+- No terminal do diretório Frontend, execute: npm run dev
