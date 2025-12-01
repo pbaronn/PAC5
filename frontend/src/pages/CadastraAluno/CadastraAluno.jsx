@@ -25,12 +25,12 @@ const CadastraAluno = ({ onLogout, onNavigate }) => {
       console.log('Aluno criado com sucesso:', response);
       showMessage('Aluno cadastrado com sucesso!', 'success');
       
-      // Opcional: navegar para a lista de alunos após cadastro
-      // setTimeout(() => {
-      //   if (onNavigate) {
-      //     onNavigate('gerenciar');
-      //   }
-      // }, 2000);
+      // Navegar para a lista de alunos após cadastro para atualizar a grid
+      setTimeout(() => {
+        if (onNavigate) {
+          onNavigate('gerenciar');
+        }
+      }, 1500);
       
     } catch (error) {
       console.error('Erro ao cadastrar aluno:', error);

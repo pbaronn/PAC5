@@ -48,12 +48,14 @@ const MenuCategorias = ({ onLogout, onNavigate }) => {
   };
 
   const handleViewCategory = (category) => {
+    console.log('Navegando para visualizar categoria:', category);
     if (onNavigate) {
       onNavigate('visualizar-categoria', { categoryData: category });
     }
   };
 
   const handleEditCategory = (category) => {
+    console.log('Navegando para editar categoria:', category);
     if (onNavigate) {
       onNavigate('editar-categoria', { categoryData: category });
     }

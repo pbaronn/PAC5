@@ -5,33 +5,52 @@ import CategoriesSidebar from '../../components/CategoriesSidebar/CategoriesSide
 import { categoryService } from '../../services/api';
 import './VisualizarCategoria.css';
 
-const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
-  const [category, setCategory] = useState(categoryData || null);
+const VisualizarCategoria = ({ onLogout, onNavigate, categoryData: rawCategoryData }) => {
+  console.log('VisualizarCategoria RENDERIZADO - rawCategoryData:', rawCategoryData);
+  
+  // Extrair dados corretos da estrutura (pode vir como {data: {...}} ou direto)
+  const initialCategoryData = rawCategoryData?.data || rawCategoryData;
+  console.log('VisualizarCategoria - initialCategoryData:', initialCategoryData);
+  
+  const [category, setCategory] = useState(initialCategoryData || null);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
-    if (categoryData && categoryData._id) {
-      loadCategoryDetails();
+    console.log('VisualizarCategoria useEffect - initialCategoryData:', initialCategoryData);
+    if (initialCategoryData && initialCategoryData._id) {
+      setCategory(initialCategoryData);
+      loadCategoryDetails(initialCategoryData._id);
     } else {
       setError('Nenhuma categoria selecionada');
       setLoading(false);
     }
-  }, [categoryData]);
+  }, [rawCategoryData]);
 
-  const loadCategoryDetails = async () => {
+  const loadCategoryDetails = async (categoryId) => {
     try {
       setLoading(true);
       setError(null);
 
+      console.log('loadCategoryDetails - Buscando categoria ID:', categoryId);
+      
       // Buscar dados atualizados da categoria
-      const categoryResponse = await categoryService.getById(category._id);
-      setCategory(categoryResponse);
+      const categoryResponse = await categoryService.getById(categoryId);
+      console.log('loadCategoryDetails - categoryResponse:', categoryResponse);
+      
+      // Extrair dados da resposta (pode vir como {data: {...}} ou {success: true, data: {...}})
+      const categoryData = categoryResponse.data || categoryResponse;
+      console.log('loadCategoryDetails - categoryData extraído:', categoryData);
+      console.log('loadCategoryDetails - campo ativo:', categoryData.ativo);
+      console.log('loadCategoryDetails - totalAlunos:', categoryData.totalAlunos);
+      
+      setCategory(categoryData);
 
       // Buscar alunos da categoria
-      const studentsResponse = await categoryService.getStudents(category._id);
+      const studentsResponse = await categoryService.getStudents(categoryId);
+      console.log('loadCategoryDetails - studentsResponse:', studentsResponse);
       setStudents(studentsResponse.students || []);
     } catch (error) {
       console.error('Erro ao carregar detalhes da categoria:', error);
@@ -72,7 +91,7 @@ const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
     try {
       await categoryService.removeStudentFromCategory(category._id, studentId);
       showSuccessMessage('Aluno removido da categoria com sucesso!');
-      await loadCategoryDetails(); // Recarregar dados
+      await loadCategoryDetails(category._id); // Recarregar dados
     } catch (error) {
       console.error('Erro ao remover aluno:', error);
       setError('Erro ao remover aluno: ' + error.message);
@@ -105,6 +124,26 @@ const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
         />
         <div className="error-state">
           <p>{error}</p>
+          <button className="back-btn" onClick={handleBack}>
+            <ArrowLeft size={16} />
+            Voltar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Só renderizar se temos uma categoria válida
+  if (!category || !category._id) {
+    return (
+      <div className="student-search-container">
+        <Header 
+          activeNav="Categorias" 
+          onLogout={onLogout} 
+          onNavigate={onNavigate}
+        />
+        <div className="error-state">
+          <p>Categoria não encontrada</p>
           <button className="back-btn" onClick={handleBack}>
             <ArrowLeft size={16} />
             Voltar
@@ -158,6 +197,11 @@ const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
 
           {/* Informações da categoria */}
           <div className="info-section">
+            {console.log('RENDERIZANDO - category:', category)}
+            {console.log('RENDERIZANDO - category.ativo:', category.ativo)}
+            {console.log('RENDERIZANDO - category.totalAlunos:', category.totalAlunos)}
+            {console.log('RENDERIZANDO - category.nome:', category.nome)}
+            
             <div className="info-header">
               <div 
                 className="category-color-display" 
@@ -200,6 +244,20 @@ const VisualizarCategoria = ({ onLogout, onNavigate, categoryData }) => {
                   {category.ativo ? 'Ativa' : 'Inativa'}
                 </span>
               </div>
+
+              {category.idadeMinima && (
+                <div className="info-item">
+                  <label>Idade Mínima:</label>
+                  <span>{category.idadeMinima} anos</span>
+                </div>
+              )}
+
+              {category.idadeMaxima && (
+                <div className="info-item">
+                  <label>Idade Máxima:</label>
+                  <span>{category.idadeMaxima} anos</span>
+                </div>
+              )}
 
             </div>
           </div>

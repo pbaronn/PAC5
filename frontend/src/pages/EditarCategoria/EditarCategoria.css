@@ -1,56 +1,68 @@
-.editar-categoria-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  color: #fff;
+/* EditarCategoria.css - Estilos específicos e sobrescritas */
+
+/* Este arquivo contém apenas customizações específicas para o modo de edição */
+/* Os estilos base vêm de VisualizarCategoria.css */
+
+.checkbox-group {
+  margin-top: 10px;
 }
 
-.main-content {
-  display: flex;
-  min-height: calc(100vh - 80px);
-}
-
-.content-area {
-  flex: 1;
-  padding: 2rem;
-  margin-left: 280px;
-  overflow-y: auto;
-}
-
-.page-header {
+.checkbox-label {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.page-header h1 {
-  font-size: 2rem;
-  margin: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.back-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: rgba(102, 126, 234, 0.1);
-  border: 2px solid rgba(102, 126, 234, 0.3);
-  border-radius: 12px;
-  color: #667eea;
-  font-weight: 600;
+  gap: 0.75rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  font-weight: 600;
 }
 
-.back-button:hover {
-  background: rgba(102, 126, 234, 0.2);
-  border-color: #667eea;
-  transform: translateX(-5px);
+/* Checkbox styling is now handled by global.css */
+
+/* Ajustes para formulários */
+.info-grid .form-group {
+  margin-bottom: 0;
 }
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Garantir que os inputs tenham o estilo correto */
+input.form-input:not(:read-only),
+textarea.form-textarea:not(:read-only) {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input.form-input:not(:read-only):focus,
+textarea.form-textarea:not(:read-only):focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.2), inset 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input.form-input:disabled,
+textarea.form-textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Ajustes de espaçamento */
+.info-section .form-group:first-child {
+  margin-top: 0;
+}
+
+/* Responsividade adicional */
+@media (max-width: 768px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 .error-message {
   display: flex;
@@ -170,12 +182,7 @@
   font-weight: 600;
 }
 
-.checkbox-label input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  accent-color: #667eea;
-}
+/* Checkbox styling is now handled by global.css */
 
 .field-hint {
   margin-top: 0.5rem;

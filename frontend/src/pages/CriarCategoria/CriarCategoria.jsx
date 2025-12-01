@@ -9,7 +9,9 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
   const [formData, setFormData] = useState({
     nome: '',
     descricao: '',
-    cor: '#3B82F6'
+    cor: '#3B82F6',
+    idadeMinima: '',
+    idadeMaxima: ''
   });
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [availableStudents, setAvailableStudents] = useState([]);
@@ -88,7 +90,7 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
       showSuccessMessage(`Categoria "${formData.nome}" criada com sucesso!`);
       
       // Limpar formulário
-      setFormData({ nome: '', descricao: '', cor: '#3B82F6' });
+      setFormData({ nome: '', descricao: '', cor: '#3B82F6', idadeMinima: '', idadeMaxima: '' });
       setSelectedStudents([]);
       
       // Recarregar alunos disponíveis
@@ -233,6 +235,38 @@ const CriarCategoria = ({ onLogout, onNavigate }) => {
                 />
                 <span className="color-preview" style={{ backgroundColor: formData.cor }}></span>
               </div>
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="idadeMinima">Idade Mínima</label>
+              <input
+                id="idadeMinima"
+                name="idadeMinima"
+                type="number"
+                value={formData.idadeMinima}
+                onChange={handleInputChange}
+                placeholder="Ex: 13"
+                className="form-input"
+                min="0"
+                max="100"
+                disabled={saving}
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="idadeMaxima">Idade Máxima</label>
+              <input
+                id="idadeMaxima"
+                name="idadeMaxima"
+                type="number"
+                value={formData.idadeMaxima}
+                onChange={handleInputChange}
+                placeholder="Ex: 15"
+                className="form-input"
+                min="0"
+                max="100"
+                disabled={saving}
+              />
             </div>
           </div>
 

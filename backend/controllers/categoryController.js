@@ -4,7 +4,7 @@ const Student = require('../models/Student');
 // Criar categoria
 const createCategory = async (req, res) => {
   try {
-    const { nome, descricao, cor } = req.body;
+    const { nome, descricao, cor, idadeMinima, idadeMaxima } = req.body;
 
     // Verificar se categoria já existe
     const existingCategory = await Category.findOne({ 
@@ -20,7 +20,9 @@ const createCategory = async (req, res) => {
     const category = new Category({
       nome,
       descricao,
-      cor: cor || '#3B82F6'
+      cor: cor || '#3B82F6',
+      idadeMinima: idadeMinima || undefined,
+      idadeMaxima: idadeMaxima || undefined
     });
 
     await category.save();
@@ -85,6 +87,8 @@ const getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
     
+    console.log('getCategoryById - Buscando categoria com ID:', id);
+    
     const category = await Category.findById(id);
     
     if (!category) {
@@ -92,9 +96,15 @@ const getCategoryById = async (req, res) => {
         message: 'Categoria não encontrada'
       });
     }
+    
+    console.log('getCategoryById - Categoria encontrada:', category);
+    console.log('getCategoryById - Campo ativo:', category.ativo);
 
     // Atualizar contagem de alunos
     await category.updateStudentCount();
+    
+    console.log('getCategoryById - Após updateStudentCount:', category);
+    console.log('getCategoryById - Campo ativo após update:', category.ativo);
 
     res.json({ 
       success: true,
@@ -113,7 +123,11 @@ const getCategoryById = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nome, descricao, cor, ativo } = req.body;
+    const { nome, descricao, cor, ativo, idadeMinima, idadeMaxima } = req.body;
+    
+    console.log('updateCategory - ID:', id);
+    console.log('updateCategory - Body recebido:', req.body);
+    console.log('updateCategory - Campo ativo:', ativo);
     
     const category = await Category.findById(id);
     
@@ -122,6 +136,8 @@ const updateCategory = async (req, res) => {
         message: 'Categoria não encontrada'
       });
     }
+    
+    console.log('updateCategory - Categoria atual:', category);
 
     // Se o nome está mudando, verificar duplicidade
     if (nome && nome !== category.nome) {
@@ -143,11 +159,25 @@ const updateCategory = async (req, res) => {
       );
     }
 
+    // Preparar dados para atualização - só incluir campos que foram enviados
+    const updateData = {};
+    
+    if (nome !== undefined) updateData.nome = nome;
+    if (descricao !== undefined) updateData.descricao = descricao;
+    if (cor !== undefined) updateData.cor = cor;
+    if (ativo !== undefined) updateData.ativo = ativo;
+    if (idadeMinima !== undefined) updateData.idadeMinima = idadeMinima;
+    if (idadeMaxima !== undefined) updateData.idadeMaxima = idadeMaxima;
+    
+    console.log('updateCategory - Dados para update:', updateData);
+
     const updatedCategory = await Category.findByIdAndUpdate(
       id,
-      { nome, descricao, cor, ativo },
+      updateData,
       { new: true, runValidators: true }
     );
+    
+    console.log('updateCategory - Categoria atualizada:', updatedCategory);
 
     // Atualizar contagem de alunos
     await updatedCategory.updateStudentCount();
@@ -268,7 +298,7 @@ const getCategoryStudents = async (req, res) => {
 
     res.json({
       success: true,
-      data: students,
+      students: students, // Mudei de 'data' para 'students' para consistência
       category: category.nome,
       total: students.length
     });

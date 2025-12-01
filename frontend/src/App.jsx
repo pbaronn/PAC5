@@ -72,15 +72,40 @@ const App = () => {
     console.log('Navegando para:', page, 'com dados:', data);
     setCurrentPage(page);
     
+    // Limpar estados anteriores quando não há dados
+    if (!data) {
+      setSelectedGame(null);
+      setSelectedCategory(null);
+      setSelectedTreino(null);
+      setSelectedStudent(null);
+    }
+    
     // Se for dados de jogo, armazena em selectedGame
     if (data && data.gameData) {
+      console.log('Armazenando gameData:', data.gameData);
       setSelectedGame(data.gameData);
+      setSelectedCategory(null);
+      setSelectedTreino(null);
+      setSelectedStudent(null);
     } else if (data && data.categoryData) {
+      console.log('Armazenando categoryData:', data.categoryData);
+      console.log('Category ID:', data.categoryData._id);
       setSelectedCategory(data.categoryData);
+      setSelectedGame(null);
+      setSelectedTreino(null);
+      setSelectedStudent(null);
     } else if (data && data.treinoData) {
+      console.log('Armazenando treinoData:', data.treinoData);
       setSelectedTreino(data.treinoData);
-    } else {
+      setSelectedGame(null);
+      setSelectedCategory(null);
+      setSelectedStudent(null);
+    } else if (data) {
+      console.log('Armazenando studentData:', data);
       setSelectedStudent(data);
+      setSelectedGame(null);
+      setSelectedCategory(null);
+      setSelectedTreino(null);
     }
     
     setEditMode(edit);
